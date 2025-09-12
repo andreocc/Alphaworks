@@ -24,3 +24,11 @@ theme = "mainroad"
 [params.widgets]
   recent_num = 5
   tags_counter = true
+
+[sitemap]
+  changefreq = "daily"
+  priority = 0.5
+
+# Para gerar sitemap de notícias
+[outputs]
+  home = ["HTML", "RSS", "JSON", "Sitemap", "Sitemap"]

@@ -39,12 +39,14 @@ def call_gemini_api(prompt: str, safety_settings=None) -> str:
 def generate_new_topic() -> str:
     """Usa a IA para gerar um novo tópico de post."""
     print("🧠 Gerando um novo tópico de notícia...")
-    current_year = datetime.now().year
+    today = datetime.now()
+    current_date_str = today.strftime("%d de %B de %Y") # Ex: "12 de Setembro de 2025"
     prompt = (
-        f"Estamos em {current_year}. Gere um título para um post de blog sobre um tópico de tecnologia que seja notícia ou uma tendência QUENTE e ATUAL. "
-        "O tópico deve ser relevante para o público brasileiro neste ano. "
+        f"Estamos em {current_date_str}. Imagine que você é um jornalista de tecnologia com acesso às últimas notícias da semana. "
+        "Gere um título para um post de blog sobre um tópico de tecnologia que seja uma notícia ou uma tendência MUITO RECENTE, desta semana. "
+        "O tópico deve ser relevante para o público brasileiro. "
         "O estilo deve ser informativo e interessante, como nos portais Tecmundo e Meiobit. "
-        "Evite tópicos que eram populares no ano passado. "
+        "Evite tópicos que eram populares em meses ou anos anteriores. "
         "Retorne APENAS o título, sem aspas ou qualquer outro texto."
     )
     try:
@@ -99,7 +101,7 @@ def create_hugo_post(title: str, content: str) -> Optional[Path]:
         slug = re.sub(r'[\s_]+', '-', slug)
         filename = POSTS_DIR / f"{now.strftime('%Y-%m-%d')}-{slug[:50]}.md"
 
-        escaped_title = title.replace('"', '\"')
+        escaped_title = title.replace('"', '"')
         frontmatter = f"""
 ---
 title: \"{escaped_title}\"\ndate: {iso_timestamp}\ndraft: false
