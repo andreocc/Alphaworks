@@ -228,39 +228,48 @@ def generate_realistic_data() -> Dict[str, str]:
     
     return {
         "version_numbers": random.choice(["2.1", "3.0", "4.5", "15.2", "24H2", "v6.1"]),
-        "percentages": f"{random.randint(15, 85)}%",
-        "user_numbers": f"{random.randint(100, 500)} milhões",
+        "users": random.choice(REALISTIC_METRICS["users"]),
+        "revenue": random.choice(REALISTIC_METRICS["revenue"]),
+        "valuation": random.choice(REALISTIC_METRICS["valuation"]),
+        "growth": random.choice(REALISTIC_METRICS["growth"]),
+        "market_share": random.choice(REALISTIC_METRICS["market_share"]),
+        "performance": random.choice(REALISTIC_METRICS["performance"]),
         "price_range": f"US$ {random.randint(99, 999)}",
         "release_timeframe": random.choice([
             "nas próximas semanas", "ainda este mês", "no primeiro trimestre de 2026",
             "até o final do ano", "na próxima atualização"
         ]),
-        "market_impact": f"{random.randint(5, 25)} bilhões de dólares",
-        "performance_gain": f"{random.randint(20, 300)}% mais rápido",
         "current_date": today.strftime("%d de %B"),
-        "this_week": f"esta semana de {today.strftime('%d de %B')}"
+        "this_week": f"esta semana de {today.strftime('%d de %B')}",
+        "temporal_context": random.choice(TEMPORAL_CONTEXTS)
     }
 
 def generate_references(title: str) -> List[str]:
     """Gera fontes de referência realistas para o artigo."""
-    print("📚 Gerando fontes de referência...")
+    print("📚 Selecionando fontes credíveis...")
     
-    prompt = (
-        f"Para um artigo sobre '{title}', gere 3-5 fontes de referência realistas e credíveis. "
-        "Use sites reais de tecnologia como: TechCrunch, The Verge, Ars Technica, Wired, "
-        "Tecmundo, Olhar Digital, Canaltech, sites oficiais de empresas, blogs de desenvolvedores conhecidos. "
-        "Formato: uma fonte por linha, apenas o nome do site/fonte (ex: 'TechCrunch', 'Site oficial da Microsoft'). "
-        "NÃO inclua URLs completas, apenas os nomes das fontes."
-    )
+    # Seleciona fontes baseadas no tipo de notícia
+    references = []
     
-    try:
-        references_text = call_gemini_api(prompt).strip()
-        references = [ref.strip() for ref in references_text.split('\n') if ref.strip()]
-        print(f"✅ {len(references)} fontes geradas")
-        return references[:5]  # Máximo 5 fontes
-    except Exception as e:
-        print(f"⚠️ Erro ao gerar referências: {e}")
-        return DEFAULT_REFERENCES[:3]  # Fallback
+    # Sempre inclui uma fonte brasileira
+    references.append(random.choice(CREDIBLE_SOURCES["brazilian"]))
+    
+    # Adiciona fontes internacionais baseadas no título
+    if any(company in title.lower() for company in ["apple", "google", "microsoft", "meta", "openai"]):
+        references.append(random.choice(CREDIBLE_SOURCES["official"]))
+    
+    # Adiciona fontes de tech news
+    references.extend(random.sample(CREDIBLE_SOURCES["tech_news"], 2))
+    
+    # Se menciona investimento/negócios, adiciona fonte business
+    if any(word in title.lower() for word in ["bilhões", "aquisição", "investimento", "ipo"]):
+        references.append(random.choice(CREDIBLE_SOURCES["business"]))
+    
+    # Remove duplicatas e limita a 5 fontes
+    references = list(dict.fromkeys(references))[:5]
+    
+    print(f"✅ {len(references)} fontes selecionadas: {', '.join(references)}")
+    return references
 
 def write_article(title: str) -> str:
     """Gera o conteúdo do artigo com base no título, incluindo fontes."""
@@ -282,12 +291,14 @@ def write_article(title: str) -> str:
         f"FONTES VERIFICADAS: {references_text}\n\n"
         f"DADOS PARA INCLUIR (use alguns destes números realistas):\n"
         f"- Versão/Build: {realistic_data['version_numbers']}\n"
-        f"- Impacto: {realistic_data['percentages']} dos usuários\n"
-        f"- Base de usuários: {realistic_data['user_numbers']}\n"
-        f"- Preço estimado: {realistic_data['price_range']}\n"
+        f"- Base de usuários: {realistic_data['users']}\n"
+        f"- Receita/Valuation: {realistic_data['revenue']} ou {realistic_data['valuation']}\n"
+        f"- Crescimento: {realistic_data['growth']}\n"
+        f"- Market share: {realistic_data['market_share']}\n"
+        f"- Performance: {realistic_data['performance']}\n"
+        f"- Preço: {realistic_data['price_range']}\n"
         f"- Timeline: {realistic_data['release_timeframe']}\n"
-        f"- Mercado: {realistic_data['market_impact']}\n"
-        f"- Performance: {realistic_data['performance_gain']}\n\n"
+        f"- Timing: {realistic_data['temporal_context']}\n\n"
         f"ESTRUTURA JORNALÍSTICA:\n"
         f"1. LEAD: Responda QUEM, O QUE, QUANDO, ONDE nos primeiros 2 parágrafos\n"
         f"2. ## Detalhes da Novidade (inclua números específicos)\n"
