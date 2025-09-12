@@ -1,4 +1,4 @@
-baseURL = 'https://example.org/'
+baseURL = 'https://alphaworks.com.br/'
 defaultContentLanguage = "pt-br"
 title = 'Alphaworks'
 theme = "mainroad"
