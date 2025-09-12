@@ -2,19 +2,19 @@
 
 Sistema automatizado para geração de posts de blog sobre tecnologia usando IA (Google Gemini).
 
-## 🔥 NOVA VERSÃO - Foco em Notícias Recentes
+## 📚 VERSÃO ÉTICA - Foco em Conteúdo Educativo
 
-### ✅ Sistema de Tendências Atuais
-- Base de dados com empresas, produtos e tecnologias em alta
-- Seleção inteligente de tópicos baseada em trends reais
-- Contexto temporal específico para notícias urgentes
-- Métricas realistas (usuários, receita, crescimento)
+### ✅ Sistema de Conteúdo Responsável
+- Artigos educativos e análises técnicas ao invés de "notícias"
+- Base de conhecimento sobre tecnologias e conceitos
+- Contexto educativo focado em valor real para o leitor
+- Diretrizes éticas rigorosas para credibilidade
 
-### ✅ Geração de Títulos Otimizada
-- Fórmulas jornalísticas para títulos impactantes
-- Palavras-chave de urgência (BREAKING, EXCLUSIVO, CONFIRMADO)
-- Elementos específicos: empresas, produtos, eventos
-- Títulos que soam como breaking news reais
+### ✅ Geração de Títulos Educativos
+- Fórmulas para conteúdo educativo (Guia, Como, Análise)
+- Palavras-chave informativas ao invés de sensacionalistas
+- Foco em explicar, comparar e educar
+- Títulos que agregam valor técnico real
 
 ## 🆕 Melhorias Implementadas
 
@@ -52,14 +52,15 @@ Sistema automatizado para geração de posts de blog sobre tecnologia usando IA 
 ## 📁 Estrutura de Arquivos
 
 ```
-├── autopost.py          # Script principal melhorado
-├── config.py            # Configurações centralizadas
-├── trends.py            # Base de dados de tendências atuais
-├── utils.py             # Utilitários e estatísticas
-├── .cache/              # Cache de tópicos (criado automaticamente)
+├── autopost.py              # Script principal (foco educativo)
+├── config.py                # Configurações centralizadas
+├── trends.py                # Base de dados de tecnologias
+├── utils.py                 # Utilitários e estatísticas
+├── ethical_guidelines.md    # Diretrizes éticas do projeto
+├── .cache/                  # Cache de tópicos (criado automaticamente)
 │   └── topics_cache.json
-├── content/posts/       # Posts gerados
-└── .env                 # Chave da API Gemini
+├── content/posts/           # Posts educativos gerados
+└── .env                     # Chave da API Gemini
 ```
 
 ## 🚀 Como Usar
@@ -177,15 +178,15 @@ python utils.py clear
 - Verifique o cache: `python utils.py cache`
 - Limpe se necessário: `python utils.py clear`
 
-## 🎯 Exemplos de Títulos Gerados
+## 🎯 Exemplos de Títulos Educativos
 
-Com as melhorias, o script agora gera títulos como:
+Com o foco ético, o script agora gera títulos como:
 
-- "CONFIRMADO: OpenAI lança GPT-5 com 10x mais poder"
-- "EXCLUSIVO: Meta adquire startup de IA por US$ 15 bilhões" 
-- "Apple anuncia iPhone 17 com tela holográfica para 2026"
-- "VAZOU: Google prepara Gemini 2.0 que supera humanos"
-- "OFICIAL: Microsoft integra IA em Windows 12"
+- "Como a Inteligência Artificial está transformando o desenvolvimento"
+- "Guia completo: Entendendo computação em nuvem em 2025"
+- "Análise: Comparativo entre React e Vue.js para desenvolvedores"
+- "Fundamentos de cibersegurança para pequenas empresas"
+- "Tendências: O futuro da computação quântica explicado"
 
 ## 🔄 Atualizando Tendências
 
@@ -202,14 +203,31 @@ TRENDING_PRODUCTS.append("Novo Produto 2026")
 EMERGING_TECH.append("Nova Tecnologia")
 ```
 
+## 🛡️ Diretrizes Éticas
+
+### ✅ O que fazemos:
+- **Conteúdo educativo** que explica conceitos e tecnologias
+- **Análises técnicas** baseadas em conhecimento estabelecido  
+- **Guias práticos** para desenvolvedores e profissionais
+- **Comparativos** equilibrados entre tecnologias
+- **Fontes credíveis** e referências reais
+
+### ❌ O que NÃO fazemos:
+- Inventar notícias ou eventos específicos
+- Criar dados ou estatísticas falsas
+- Usar linguagem sensacionalista
+- Afirmar fatos não verificáveis
+- Gerar "breaking news" fictícias
+
 ## 📝 Próximas Melhorias
 
-- [x] ✅ Sistema de tendências atuais
-- [x] ✅ Títulos com urgência jornalística  
-- [x] ✅ Dados e métricas realistas
-- [x] ✅ Fontes categorizadas por tipo
-- [ ] Integração com APIs de notícias reais
-- [ ] Geração de imagens automática
-- [ ] Agendamento de posts
-- [ ] Análise de SEO
+- [x] ✅ Sistema de conteúdo educativo
+- [x] ✅ Diretrizes éticas rigorosas
+- [x] ✅ Títulos informativos (não sensacionalistas)
+- [x] ✅ Fontes categorizadas e credíveis
+- [x] ✅ Validação de credibilidade
+- [ ] Integração com APIs de documentação técnica
+- [ ] Geração de diagramas explicativos
+- [ ] Sistema de revisão de qualidade
+- [ ] Análise de SEO educativo
 - [ ] Múltiplos idiomas

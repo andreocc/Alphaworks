@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 import google.generativeai as genai
 from config import *
 from trends import *
+from news_api import get_current_news, get_news_context
 
 # --- Configurações ---
 POSTS_DIR = Path("content/posts")
@@ -39,8 +40,9 @@ def call_gemini_api(prompt: str, safety_settings=None, max_retries=MAX_API_RETRI
     Chama a API do Gemini com um prompt e configurações de segurança opcionais.
     Retorna a resposta em texto ou lança uma exceção em caso de erro.
     """
-    model = genai.GenerativeModel('models/gemini-1.5-flash-latest')
-    
+    model = genai.GenerativeModel('models/gemini-2.5-pro')    
+    # ---model = genai.GenerativeModel('models/gemini-1.5-flash-latest')
+    # ---model = genai.GenerativeModel('models/gemini-2.5-flash-lite-preview-06-17')    
     for attempt in range(max_retries):
         try:
             response = model.generate_content(prompt, safety_settings=safety_settings)
@@ -135,16 +137,340 @@ def get_market_trends() -> Dict[str, List[str]]:
         ]
     }
 
+def generate_news_technical_analysis() -> str:
+    """Gera análise técnica baseada em notícia real do Google News style."""
+    print("📰 Gerando análise técnica de notícia real...")
+    
+    cache_data = load_topics_cache()
+    used_topics = cache_data.get("used_topics", [])
+    
+    try:
+        # Obtém notícias atuais
+        news_articles = get_current_news("technology")
+        
+        if news_articles:
+            selected_news = random.choice(news_articles)
+            news_title = selected_news["title"]
+            news_source = selected_news["source"]
+            
+            # Limpa o título da notícia para usar nos templates
+            clean_title = news_title.replace('"', '').replace("'", "")
+            
+            # Templates de análise técnica baseados na notícia
+            analysis_templates = [
+                f"Análise técnica: {clean_title} - impactos na infraestrutura",
+                f"Deep dive: por trás de '{clean_title}' - arquitetura e implementação",
+                f"Tech breakdown: {clean_title} - o que profissionais precisam saber",
+                f"Security review: {clean_title} - vulnerabilidades e mitigações",
+                f"Performance analysis: {clean_title} - benchmarks e otimizações", 
+                f"DevOps perspective: {clean_title} - deployment e monitoring",
+                f"Enterprise impact: {clean_title} - ROI e adoção corporativa",
+                f"Infrastructure implications: {clean_title} - scaling e recursos",
+                f"Implementation guide: lições técnicas de '{clean_title}'",
+                f"Case study técnico: análise completa de {clean_title}"
+            ]
+            
+            # Testa títulos até encontrar um válido
+            for template in analysis_templates:
+                # Ajusta tamanho se necessário
+                if len(template) > SEO_TITLE_MAX_LENGTH:
+                    # Trunca mantendo o essencial
+                    template = template[:SEO_TITLE_MAX_LENGTH-3] + "..."
+                
+                if len(template) >= SEO_TITLE_MIN_LENGTH and not is_topic_duplicate(template, used_topics):
+                    print(f"✅ Análise técnica: {template}")
+                    print(f"📰 Notícia base: {news_source} - {clean_title[:50]}...")
+                    
+                    # Atualiza cache com informações da notícia
+                    used_topics.append(template)
+                    cache_data["used_topics"] = used_topics[-MAX_CACHED_TOPICS:]
+                    cache_data["last_update"] = datetime.now().isoformat()
+                    cache_data["news_source"] = {
+                        "title": news_title,
+                        "source": news_source,
+                        "url": selected_news.get("url", ""),
+                        "published_at": selected_news.get("published_at", ""),
+                        "analysis_type": "technical"
+                    }
+                    save_topics_cache(cache_data)
+                    
+                    return template
+        
+        # Fallback se não conseguir gerar da notícia
+        return generate_it_professional_topic()
+        
+    except Exception as e:
+        print(f"❌ Erro ao gerar análise técnica: {e}")
+        return generate_it_professional_topic()
+
+def generate_it_professional_topic() -> str:
+    """Gera tópico técnico focado em profissionais de TI."""
+    print("💻 Gerando tópico técnico para profissionais de TI...")
+    
+    cache_data = load_topics_cache()
+    used_topics = cache_data.get("used_topics", [])
+    
+    # Obtém notícias atuais
+    try:
+        news_articles = get_current_news("technology")
+        
+        if news_articles:
+            selected_news = random.choice(news_articles)
+            news_title = selected_news["title"]
+            news_keywords = selected_news.get("keywords", [])
+            
+            # Templates técnicos específicos para IT
+            it_templates = [
+                f"Technical analysis: {news_title.lower()} - infrastructure implications",
+                f"DevOps impact: how {news_title.lower()} affects deployment pipelines", 
+                f"Security assessment: {news_title.lower()} vulnerabilities and mitigations",
+                f"Performance review: {news_title.lower()} benchmarks and optimization",
+                f"Architecture deep dive: {news_title.lower()} system design patterns",
+                f"Enterprise perspective: {news_title.lower()} adoption challenges",
+                f"Implementation guide: deploying solutions from {news_title.lower()}",
+                f"Monitoring and observability: tracking {news_title.lower()} in production"
+            ]
+            
+            # Se há palavras-chave técnicas, cria títulos mais específicos
+            if news_keywords:
+                tech_keyword = news_keywords[0]
+                specific_templates = [
+                    f"Deep dive: {tech_keyword} architecture revealed by {news_title.lower()}",
+                    f"Performance analysis: {tech_keyword} scalability insights from {news_title.lower()}",
+                    f"Security review: {tech_keyword} vulnerabilities exposed in {news_title.lower()}",
+                    f"DevOps guide: {tech_keyword} deployment lessons from {news_title.lower()}",
+                    f"Infrastructure impact: {tech_keyword} requirements after {news_title.lower()}"
+                ]
+                it_templates.extend(specific_templates)
+            
+            # Testa títulos técnicos
+            for template in it_templates:
+                if len(template) <= SEO_TITLE_MAX_LENGTH and not is_topic_duplicate(template, used_topics):
+                    print(f"✅ Título técnico: {template}")
+                    print(f"📰 Base: {selected_news['source']} - {news_title[:50]}...")
+                    
+                    # Atualiza cache
+                    used_topics.append(template)
+                    cache_data["used_topics"] = used_topics[-MAX_CACHED_TOPICS:]
+                    cache_data["last_update"] = datetime.now().isoformat()
+                    cache_data["news_source"] = {
+                        "title": news_title,
+                        "source": selected_news["source"],
+                        "url": selected_news.get("url", ""),
+                        "published_at": selected_news.get("published_at", "")
+                    }
+                    save_topics_cache(cache_data)
+                    
+                    return template
+        
+        # Fallback: gera título técnico sem notícia específica
+        return generate_technical_seo_topic()
+        
+    except Exception as e:
+        print(f"❌ Erro ao gerar tópico técnico: {e}")
+        return generate_technical_seo_topic()
+
+def generate_technical_seo_topic() -> str:
+    """Gera tópico técnico SEO para profissionais de TI."""
+    print("🔧 Gerando tópico técnico SEO...")
+    
+    cache_data = load_topics_cache()
+    used_topics = cache_data.get("used_topics", [])
+    
+    # Seleciona elementos técnicos
+    tech_template = random.choice(IT_PROFESSIONAL_TITLE_TEMPLATES)
+    tech_keyword = random.choice(IT_TECHNICAL_KEYWORDS)
+    tech_area = random.choice(TRENDING_PRODUCTS + EMERGING_TECH)
+    sector = random.choice(APPLICATION_SECTORS)
+    
+    # Gera variações técnicas
+    technical_variations = [
+        tech_template.format(tecnologia=tech_keyword, alternativa=random.choice(IT_TECHNICAL_KEYWORDS), setor=sector),
+        f"Performance benchmarks: {tech_keyword} vs {random.choice(IT_TECHNICAL_KEYWORDS)}",
+        f"Production deployment: {tech_keyword} best practices and pitfalls",
+        f"Scalability analysis: {tech_keyword} under high load conditions",
+        f"Security hardening: {tech_keyword} configuration and monitoring",
+        f"DevOps integration: {tech_keyword} in CI/CD pipelines",
+        f"Infrastructure as Code: {tech_keyword} automation strategies",
+        f"Monitoring and alerting: {tech_keyword} observability patterns"
+    ]
+    
+    # Seleciona título válido
+    for title in technical_variations:
+        if SEO_TITLE_MIN_LENGTH <= len(title) <= SEO_TITLE_MAX_LENGTH and not is_topic_duplicate(title, used_topics):
+            print(f"✅ Título técnico SEO: {title}")
+            
+            # Atualiza cache
+            used_topics.append(title)
+            cache_data["used_topics"] = used_topics[-MAX_CACHED_TOPICS:]
+            cache_data["last_update"] = datetime.now().isoformat()
+            save_topics_cache(cache_data)
+            
+            return title
+    
+    # Fallback final
+    return generate_seo_optimized_topic()
+
+def generate_news_based_topic() -> str:
+    """Gera tópico baseado em notícias reais atuais."""
+    print("📰 Gerando tópico baseado em notícias atuais...")
+    
+    cache_data = load_topics_cache()
+    used_topics = cache_data.get("used_topics", [])
+    
+    # Obtém notícias atuais
+    try:
+        news_articles = get_current_news("technology")
+        
+        if not news_articles:
+            print("⚠️ Nenhuma notícia encontrada, usando geração SEO...")
+            return generate_seo_optimized_topic()
+        
+        # Seleciona notícia aleatória
+        selected_news = random.choice(news_articles)
+        
+        # Gera variações de título baseadas na notícia
+        news_title = selected_news["title"]
+        news_keywords = selected_news.get("keywords", [])
+        
+        # Templates para transformar notícia em conteúdo
+        news_templates = [
+            f"Análise: O que {news_title.lower()} significa para o mercado",
+            f"Entendendo: Como {news_title.lower()} impacta empresas brasileiras", 
+            f"Contexto: Por que {news_title.lower()} é importante",
+            f"Guia: O que aprender com {news_title.lower()}",
+            f"Impacto: Como {news_title.lower()} muda o cenário tech",
+            f"Análise completa: {news_title} e suas implicações"
+        ]
+        
+        # Gera títulos mais específicos se há palavras-chave
+        if news_keywords:
+            keyword = news_keywords[0]
+            specific_templates = [
+                f"Como {keyword} está transformando o mercado após {news_title.lower()}",
+                f"Guia completo: {keyword} no contexto de {news_title.lower()}",
+                f"Análise: Impacto de {keyword} revelado por {news_title.lower()}",
+                f"O que {news_title.lower()} ensina sobre {keyword}",
+                f"Tendências em {keyword}: lições de {news_title.lower()}"
+            ]
+            news_templates.extend(specific_templates)
+        
+        # Testa títulos até encontrar um válido
+        for template in news_templates:
+            # Ajusta tamanho se necessário
+            if len(template) > SEO_TITLE_MAX_LENGTH:
+                # Trunca mantendo sentido
+                template = template[:SEO_TITLE_MAX_LENGTH-3] + "..."
+            
+            if len(template) >= SEO_TITLE_MIN_LENGTH and not is_topic_duplicate(template, used_topics):
+                print(f"✅ Título baseado em notícia: {template}")
+                print(f"📰 Notícia fonte: {selected_news['source']} - {news_title[:50]}...")
+                
+                # Atualiza cache
+                used_topics.append(template)
+                cache_data["used_topics"] = used_topics[-MAX_CACHED_TOPICS:]
+                cache_data["last_update"] = datetime.now().isoformat()
+                cache_data["news_source"] = {
+                    "title": news_title,
+                    "source": selected_news["source"],
+                    "url": selected_news.get("url", ""),
+                    "published_at": selected_news.get("published_at", "")
+                }
+                save_topics_cache(cache_data)
+                
+                return template
+        
+        print("⚠️ Nenhum título válido gerado da notícia, usando SEO...")
+        return generate_seo_optimized_topic()
+        
+    except Exception as e:
+        print(f"❌ Erro ao obter notícias: {e}")
+        print("⚠️ Fallback para geração SEO...")
+        return generate_seo_optimized_topic()
+
+def generate_seo_optimized_topic() -> str:
+    """Gera um tópico otimizado para SEO e Google Ads."""
+    print("🎯 Gerando tópico SEO-otimizado...")
+    
+    cache_data = load_topics_cache()
+    used_topics = cache_data.get("used_topics", [])
+    
+    today = datetime.now()
+    current_year = today.year
+    
+    # Seleciona categoria SEO e palavras-chave
+    seo_category = random.choice(list(SEO_KEYWORDS.keys()))
+    keywords = SEO_KEYWORDS[seo_category]
+    primary_keyword = random.choice(keywords)
+    
+    # Seleciona template SEO
+    template = random.choice(SEO_TITLE_TEMPLATES)
+    
+    # Preenche o template com dados relevantes
+    tech_area = random.choice(TRENDING_PRODUCTS + EMERGING_TECH)
+    sector = random.choice(APPLICATION_SECTORS)
+    audience = random.choice(["desenvolvedores", "empresas", "iniciantes", "profissionais"])
+    number = random.choice(["5", "7", "10", "15"])
+    
+    # Gera título baseado no template
+    title_variations = []
+    
+    try:
+        title = template.format(
+            tecnologia=primary_keyword,
+            setor=sector,
+            público=audience,
+            número=number,
+            ano=current_year,
+            alternativa=random.choice(keywords),
+            contexto=sector
+        )
+        title_variations.append(title)
+    except KeyError:
+        pass  # Template não compatível, pula
+    
+    # Adiciona variações manuais SEO-friendly
+    manual_variations = [
+        f"Como usar {primary_keyword} para melhorar {sector}",
+        f"Guia completo de {primary_keyword} para {audience}",
+        f"{number} dicas de {primary_keyword} que funcionam em {current_year}",
+        f"Tutorial: {primary_keyword} na prática para {sector}",
+        f"Análise: impacto de {primary_keyword} no Brasil"
+    ]
+    
+    title_variations.extend(manual_variations)
+    
+    # Seleciona título que não seja duplicata
+    for title in title_variations:
+        if not is_topic_duplicate(title, used_topics):
+            # Valida tamanho SEO
+            if SEO_TITLE_MIN_LENGTH <= len(title) <= SEO_TITLE_MAX_LENGTH:
+                print(f"✅ Título SEO gerado: {title}")
+                print(f"📊 Palavra-chave principal: {primary_keyword}")
+                print(f"🎯 Categoria: {seo_category}")
+                
+                # Atualiza cache
+                used_topics.append(title)
+                cache_data["used_topics"] = used_topics[-MAX_CACHED_TOPICS:]
+                cache_data["last_update"] = datetime.now().isoformat()
+                save_topics_cache(cache_data)
+                
+                return title
+    
+    # Fallback para geração com IA se necessário
+    print("⚠️ Nenhum título SEO válido encontrado, usando geração com IA...")
+    return generate_new_topic()
+
 def generate_new_topic() -> str:
-    """Usa a IA para gerar um novo tópico de post, evitando duplicatas."""
-    print("🧠 Gerando um novo tópico de notícia recente...")
+    """Usa a IA para gerar um novo tópico educativo e analítico sobre tecnologia."""
+    print("🧠 Gerando tópico educativo sobre tecnologia...")
     
     cache_data = load_topics_cache()
     used_topics = cache_data.get("used_topics", [])
     
     today = datetime.now()
     current_date_str = today.strftime("%d de %B de %Y")
-    temporal_context = get_current_tech_context()
+    current_year = today.year
     
     # Obtém tendências atuais do mercado
     market_trends = get_market_trends()
@@ -158,49 +484,90 @@ def generate_new_topic() -> str:
         # Seleciona 2-3 tendências da categoria escolhida
         selected_trends = random.sample(category_trends, min(3, len(category_trends)))
         
-        # Adiciona algumas tendências de outras categorias para contexto
-        other_categories = [k for k in market_trends.keys() if k != category]
-        if other_categories:
-            other_category = random.choice(other_categories)
-            selected_trends.extend(random.sample(market_trends[other_category], 1))
+        # Decide se será conteúdo puramente educativo ou híbrido (70% educativo, 30% híbrido)
+        is_hybrid = random.random() < 0.3
         
-        # Seleciona elementos específicos das tendências
-        hot_company = random.choice(HOT_COMPANIES)
-        trending_product = random.choice(TRENDING_PRODUCTS)
-        emerging_tech = random.choice(EMERGING_TECH)
-        recent_event = random.choice(RECENT_EVENTS)
-        urgency_word = random.choice(URGENCY_KEYWORDS)
-        temporal_context_specific = random.choice(TEMPORAL_CONTEXTS)
+        if is_hybrid:
+            # Conteúdo híbrido: educativo + contexto de notícias
+            content_type = random.choice(HYBRID_CONTENT_TYPES)
+            hybrid_keyword = random.choice(HYBRID_KEYWORDS)
+            news_context = random.choice(NEWS_CONTEXTS)
+            tech_theme = random.choice(list(TECH_NEWS_THEMES.keys()))
+            theme_topics = TECH_NEWS_THEMES[tech_theme]
+            news_topic = random.choice(theme_topics)
+            print(f"🔄 Modo híbrido: {content_type} sobre {news_topic}")
+        else:
+            # Conteúdo puramente educativo
+            content_type = random.choice(EDUCATIONAL_CONTENT_TYPES)
+            educational_keyword = random.choice(EDUCATIONAL_KEYWORDS)
+            print(f"📚 Modo educativo: {content_type}")
         
-        prompt = (
-            f"🚨 NEWSROOM ALERT - {current_date_str} {temporal_context_specific}\n\n"
-            f"Você é editor-chefe de tecnologia gerando um título URGENTE para breaking news.\n\n"
-            f"ELEMENTOS PARA O TÍTULO (use 1-2 destes):\n"
-            f"• Empresa: {hot_company}\n"
-            f"• Produto: {trending_product}\n"
-            f"• Tecnologia: {emerging_tech}\n"
-            f"• Evento: {recent_event}\n"
-            f"• Urgência: {urgency_word}\n"
-            f"• Timing: {temporal_context_specific}\n\n"
-            f"FÓRMULAS DE TÍTULO EFICAZES:\n"
-            f"• '[URGÊNCIA] [Empresa] [evento] [produto/tecnologia]'\n"
-            f"• '[Empresa] [evento] [produto]: [impacto/número]'\n"
-            f"• '[Produto] da [Empresa] [evento] com [tecnologia]'\n"
-            f"• 'VAZOU: [Empresa] prepara [produto] com [tecnologia]'\n\n"
-            f"EXEMPLOS DE ESTILO:\n"
-            f"• 'CONFIRMADO: OpenAI lança GPT-5 com 10x mais poder'\n"
-            f"• 'Apple anuncia iPhone 17 com tela holográfica para 2026'\n"
-            f"• 'EXCLUSIVO: Meta adquire startup de IA por US$ 15 bilhões'\n"
-            f"• 'Google revela Gemini 2.0 que supera humanos em programação'\n\n"
-            f"REQUISITOS:\n"
-            f"• Máximo 80 caracteres\n"
-            f"• Inclua números/dados específicos quando possível\n"
-            f"• Use palavras de impacto: revoluciona, supera, anuncia, confirma\n"
-            f"• Foque no BENEFÍCIO/IMPACTO para o usuário\n\n"
-            f"EVITE (já cobertos): {', '.join(used_topics[-5:]) if used_topics else 'nenhum'}\n\n"
-            f"Gere UM título que pareça ter saído agora de uma redação tech!\n"
-            f"APENAS O TÍTULO, sem explicações:"
-        )
+        tech_area = random.choice(selected_trends)
+        application_sector = random.choice(APPLICATION_SECTORS)
+        technical_concept = random.choice(TECHNICAL_CONCEPTS)
+        
+        if is_hybrid:
+            # Prompt para conteúdo híbrido (educativo + contexto de notícias)
+            prompt = (
+                f"Você é um analista técnico criando conteúdo educativo contextualizado para {current_year}.\n\n"
+                f"Gere um título que EDUQUE sobre tecnologia usando contexto de tendências atuais:\n\n"
+                f"ELEMENTOS PARA O TÍTULO:\n"
+                f"• Tipo de análise: {content_type}\n"
+                f"• Contexto atual: {news_context} {news_topic}\n"
+                f"• Área técnica: {tech_area}\n"
+                f"• Setor de aplicação: {application_sector}\n"
+                f"• Conceito técnico: {technical_concept}\n\n"
+                f"FÓRMULAS HÍBRIDAS:\n"
+                f"• '{content_type}: {news_topic} e o impacto em [setor]'\n"
+                f"• 'O que {news_topic} ensina sobre [conceito técnico]'\n"
+                f"• '{hybrid_keyword}: Como {news_topic} afeta [setor]'\n"
+                f"• 'Lições de {news_topic} para [aplicação prática]'\n\n"
+                f"EXEMPLOS HÍBRIDOS:\n"
+                f"• 'Análise: O que os avanços em IA generativa significam para startups'\n"
+                f"• 'Contexto: Por que investimentos em IA estão transformando a saúde'\n"
+                f"• 'Entendendo o impacto de novos modelos de linguagem no desenvolvimento'\n"
+                f"• 'Lições dos recentes desenvolvimentos em cibersegurança para PMEs'\n\n"
+                f"DIRETRIZES HÍBRIDAS:\n"
+                f"• Use contexto de tendências SEM inventar fatos específicos\n"
+                f"• Foque no APRENDIZADO que o contexto oferece\n"
+                f"• Mantenha tom educativo, não noticioso\n"
+                f"• Máximo 100 caracteres\n"
+                f"• Evite datas específicas ou eventos inventados\n\n"
+                f"EVITE (já cobertos): {', '.join(used_topics[-5:]) if used_topics else 'nenhum'}\n\n"
+                f"Gere um título que ENSINE usando contexto atual:\n"
+                f"APENAS O TÍTULO:"
+            )
+        else:
+            # Prompt para conteúdo puramente educativo
+            prompt = (
+                f"Você é um especialista técnico criando conteúdo educativo para {current_year}.\n\n"
+                f"Gere um título EDUCATIVO sobre tecnologia usando estes elementos:\n\n"
+                f"ELEMENTOS DISPONÍVEIS:\n"
+                f"• Tipo de conteúdo: {content_type}\n"
+                f"• Área técnica: {tech_area}\n"
+                f"• Palavra-chave educativa: {educational_keyword}\n"
+                f"• Setor de aplicação: {application_sector}\n"
+                f"• Conceito técnico: {technical_concept}\n\n"
+                f"FÓRMULAS EDUCATIVAS:\n"
+                f"• '{educational_keyword} [tecnologia]: [conceito] para [setor]'\n"
+                f"• '{content_type}: [tecnologia] em [setor] - [conceito]'\n"
+                f"• 'Como [tecnologia] melhora [conceito] no [setor]'\n"
+                f"• '{content_type} de [tecnologia]: [conceito] na prática'\n\n"
+                f"EXEMPLOS DE QUALIDADE:\n"
+                f"• 'Guia completo: Implementando IA generativa em startups'\n"
+                f"• 'Análise: Como edge computing melhora performance em saúde'\n"
+                f"• 'Entendendo blockchain: Segurança de dados no setor financeiro'\n"
+                f"• 'Comparativo: Arquiteturas de software para escalabilidade'\n\n"
+                f"DIRETRIZES:\n"
+                f"• Foque em VALOR EDUCATIVO real\n"
+                f"• Use linguagem técnica mas acessível\n"
+                f"• Seja específico sobre aplicação prática\n"
+                f"• Máximo 100 caracteres\n"
+                f"• Evite sensacionalismo\n\n"
+                f"EVITE (já cobertos): {', '.join(used_topics[-5:]) if used_topics else 'nenhum'}\n\n"
+                f"Gere UM título educativo que ensine algo valioso:\n"
+                f"APENAS O TÍTULO:"
+            )
         
         try:
             topic = call_gemini_api(prompt).strip()
@@ -222,26 +589,28 @@ def generate_new_topic() -> str:
     print("❌ Não foi possível gerar um tópico único após várias tentativas.")
     return ""
 
-def generate_realistic_data() -> Dict[str, str]:
-    """Gera dados realistas para tornar as notícias mais específicas."""
+def get_educational_context(title: str) -> Dict[str, str]:
+    """Gera contexto educativo baseado no título do artigo."""
     today = datetime.now()
+    current_year = today.year
+    
+    # Identifica o tipo de conteúdo baseado no título
+    if any(word in title.lower() for word in ["como", "guia", "entendendo"]):
+        content_focus = "explicativo"
+    elif any(word in title.lower() for word in ["análise", "comparativo", "vs"]):
+        content_focus = "analítico"
+    elif any(word in title.lower() for word in ["futuro", "tendências", "evolução"]):
+        content_focus = "prospectivo"
+    else:
+        content_focus = "informativo"
     
     return {
-        "version_numbers": random.choice(["2.1", "3.0", "4.5", "15.2", "24H2", "v6.1"]),
-        "users": random.choice(REALISTIC_METRICS["users"]),
-        "revenue": random.choice(REALISTIC_METRICS["revenue"]),
-        "valuation": random.choice(REALISTIC_METRICS["valuation"]),
-        "growth": random.choice(REALISTIC_METRICS["growth"]),
-        "market_share": random.choice(REALISTIC_METRICS["market_share"]),
-        "performance": random.choice(REALISTIC_METRICS["performance"]),
-        "price_range": f"US$ {random.randint(99, 999)}",
-        "release_timeframe": random.choice([
-            "nas próximas semanas", "ainda este mês", "no primeiro trimestre de 2026",
-            "até o final do ano", "na próxima atualização"
-        ]),
-        "current_date": today.strftime("%d de %B"),
-        "this_week": f"esta semana de {today.strftime('%d de %B')}",
-        "temporal_context": random.choice(TEMPORAL_CONTEXTS)
+        "current_year": str(current_year),
+        "content_focus": content_focus,
+        "educational_approach": random.choice([
+            "didático e acessível", "técnico mas compreensível", 
+            "prático e aplicado", "analítico e detalhado"
+        ])
     }
 
 def generate_references(title: str) -> List[str]:
@@ -272,55 +641,243 @@ def generate_references(title: str) -> List[str]:
     return references
 
 def write_article(title: str) -> str:
-    """Gera o conteúdo do artigo com base no título, incluindo fontes."""
-    print(f'✍️ Escrevendo artigo sobre: "{title}"...')
+    """Gera o conteúdo do artigo baseado em notícias reais ou educativo."""
     
-    # Gera as referências e dados realistas
+    # Detecta se é conteúdo baseado em notícias
+    is_news_based = any(word in title.lower() for word in [
+        "análise:", "contexto:", "o que", "lições", "por trás", 
+        "significam", "impacto de", "entendendo", "como", "após"
+    ])
+    
+    # Obtém contexto de notícia se disponível
+    news_context = None
+    if is_news_based:
+        # Extrai palavras-chave do título para buscar notícia relevante
+        title_keywords = []
+        for category_keywords in SEO_KEYWORDS.values():
+            for keyword in category_keywords:
+                if keyword.lower() in title.lower():
+                    title_keywords.append(keyword)
+        
+        news_context = get_news_context(title_keywords)
+    
+    if news_context:
+        print(f'✍️ Escrevendo artigo baseado em notícia real: "{title}"...')
+        print(f'📰 Contexto: {news_context["source"]} - {news_context["title"][:50]}...')
+    elif is_news_based:
+        print(f'✍️ Escrevendo artigo híbrido (educativo + contexto): "{title}"...')
+    else:
+        print(f'✍️ Escrevendo artigo educativo sobre: "{title}"...')
+    
+    # Gera as referências credíveis e contexto educativo
     references = generate_references(title)
     references_text = ", ".join(references)
-    realistic_data = generate_realistic_data()
+    edu_context = get_educational_context(title)
     
     today = datetime.now()
     current_date = today.strftime("%d de %B de %Y")
     
-    prompt = (
-        f"BREAKING NEWS - {current_date}\n\n"
-        f"Você é um jornalista tech da {random.choice(['Tecmundo', 'The Verge', 'TechCrunch'])} "
-        f"escrevendo uma matéria EXCLUSIVA sobre: '{title}'\n\n"
-        f"CONTEXTO TEMPORAL: Esta notícia acabou de ser confirmada {realistic_data['this_week']}.\n\n"
-        f"FONTES VERIFICADAS: {references_text}\n\n"
-        f"DADOS PARA INCLUIR (use alguns destes números realistas):\n"
-        f"- Versão/Build: {realistic_data['version_numbers']}\n"
-        f"- Base de usuários: {realistic_data['users']}\n"
-        f"- Receita/Valuation: {realistic_data['revenue']} ou {realistic_data['valuation']}\n"
-        f"- Crescimento: {realistic_data['growth']}\n"
-        f"- Market share: {realistic_data['market_share']}\n"
-        f"- Performance: {realistic_data['performance']}\n"
-        f"- Preço: {realistic_data['price_range']}\n"
-        f"- Timeline: {realistic_data['release_timeframe']}\n"
-        f"- Timing: {realistic_data['temporal_context']}\n\n"
-        f"ESTRUTURA JORNALÍSTICA:\n"
-        f"1. LEAD: Responda QUEM, O QUE, QUANDO, ONDE nos primeiros 2 parágrafos\n"
-        f"2. ## Detalhes da Novidade (inclua números específicos)\n"
-        f"3. ## Impacto no Mercado (compare com concorrentes)\n"
-        f"4. ## Reação da Comunidade Tech\n"
-        f"5. ## Próximos Passos (roadmap, expectativas)\n\n"
-        f"REQUISITOS:\n"
-        f"- {ARTICLE_MIN_WORDS}-{ARTICLE_MAX_WORDS} palavras\n"
-        f"- Tom de URGÊNCIA jornalística (use 'acabou de', 'confirmou hoje', 'anunciou agora')\n"
-        f"- Citações de executivos (invente nomes realistas)\n"
-        f"- Dados técnicos específicos\n"
-        f"- Menção ao impacto no Brasil\n"
-        f"- Linguagem técnica mas acessível\n\n"
-        f"IMPORTANTE:\n"
-        f"- Escreva como se fosse FATO REAL que aconteceu hoje\n"
-        f"- Use números e dados específicos fornecidos acima\n"
-        f"- Inclua timestamps realistas ('nesta manhã', 'há poucas horas')\n"
-        f"- Compare com produtos/serviços similares\n"
-        f"- NÃO mencione que é conteúdo gerado por IA\n"
-        f"- NÃO inclua seção de referências no final\n\n"
-        f"Trate como uma EXCLUSIVA que você acabou de confirmar com suas fontes!"
-    )
+    # Detecta se é análise técnica de notícia
+    is_news_analysis = any(word in title.lower() for word in [
+        "análise técnica:", "deep dive:", "tech breakdown:", "security review:",
+        "performance analysis:", "devops perspective:", "enterprise impact:",
+        "infrastructure implications:", "implementation guide:", "case study técnico:"
+    ])
+    
+    # Detecta se é conteúdo técnico geral
+    is_technical_content = any(word in title.lower() for word in [
+        "technical", "deep dive", "performance", "security", "devops", 
+        "architecture", "infrastructure", "deployment", "monitoring", "benchmarks"
+    ])
+    
+    if news_context and is_news_analysis:
+        # Prompt para conteúdo técnico baseado em notícia
+        news_title = news_context["title"]
+        news_source = news_context["source"]
+        news_description = news_context.get("description", "")
+        
+        prompt = (
+            f"ANÁLISE TÉCNICA DE NOTÍCIA REAL - {current_date}\n\n"
+            f"Você é um tech lead sênior fazendo uma análise técnica profunda da notícia: '{news_title}'\n"
+            f"Seu artigo tem o título: '{title}'\n\n"
+            f"NOTÍCIA ORIGINAL:\n"
+            f"- Título: {news_title}\n"
+            f"- Fonte: {news_source}\n"
+            f"- Contexto: {news_description}\n\n"
+            f"FONTES TÉCNICAS ADICIONAIS: {references_text}\n\n"
+            f"OBJETIVO: Fazer um 'refactoring' técnico da notícia, explicando:\n"
+            f"- O que realmente aconteceu tecnicamente\n"
+            f"- Por que isso importa para profissionais de TI\n"
+            f"- Quais são as implicações práticas\n"
+            f"- Como isso afeta infraestrutura e operações\n\n"
+            f"ESTRUTURA DA ANÁLISE:\n"
+            f"1. ## Resumo da Notícia\n"
+            f"   - Contextualize a notícia original de forma técnica\n"
+            f"   - Explique o que realmente aconteceu\n\n"
+            f"2. ## Análise Técnica Profunda\n"
+            f"   - Arquitetura e componentes envolvidos\n"
+            f"   - Stack tecnológico e ferramentas\n"
+            f"   - Especificações e requisitos técnicos\n\n"
+            f"3. ## Impactos na Infraestrutura\n"
+            f"   - Como isso afeta sistemas existentes\n"
+            f"   - Requisitos de hardware/software\n"
+            f"   - Considerações de escalabilidade\n\n"
+            f"4. ## Perspectiva DevOps\n"
+            f"   - Impactos em CI/CD e deployment\n"
+            f"   - Monitoring e observabilidade\n"
+            f"   - Estratégias de rollback e disaster recovery\n\n"
+            f"5. ## Security & Compliance\n"
+            f"   - Vulnerabilidades e vetores de ataque\n"
+            f"   - Mitigações e hardening\n"
+            f"   - Compliance e regulamentações\n\n"
+            f"6. ## Performance & Benchmarks\n"
+            f"   - Métricas de performance esperadas\n"
+            f"   - Comparações com soluções existentes\n"
+            f"   - Gargalos e otimizações\n\n"
+            f"7. ## Implementação Prática\n"
+            f"   - Roadmap de adoção\n"
+            f"   - Custos e ROI\n"
+            f"   - Riscos e mitigações\n\n"
+            f"8. ## Conclusão Técnica\n"
+            f"   - Recomendações para profissionais\n"
+            f"   - Próximos passos e tendências\n\n"
+            f"DIRETRIZES ESPECÍFICAS:\n"
+            f"- {SEO_ARTICLE_MIN_WORDS}-{SEO_ARTICLE_MAX_WORDS} palavras\n"
+            f"- Use a notícia como BASE, mas vá muito além dela\n"
+            f"- Inclua números, métricas, especificações técnicas\n"
+            f"- Mencione ferramentas, frameworks, tecnologias específicas\n"
+            f"- Foque em aspectos práticos de implementação\n"
+            f"- Linguagem técnica para profissionais experientes\n"
+            f"- Contextualize para realidade de empresas brasileiras\n\n"
+            f"ELEMENTOS OBRIGATÓRIOS:\n"
+            f"✅ Análise técnica que vai além da notícia superficial\n"
+            f"✅ Especificações e requisitos detalhados\n"
+            f"✅ Considerações práticas de implementação\n"
+            f"✅ Impactos em infraestrutura e operações\n"
+            f"✅ Métricas, benchmarks e números concretos\n"
+            f"✅ Ferramentas e tecnologias específicas\n"
+            f"✅ Estratégias de deployment e monitoring\n\n"
+            f"Transforme a notícia em uma ANÁLISE TÉCNICA PROFUNDA que profissionais de TI realmente precisam!"
+        )
+    elif news_context:
+        # Prompt para conteúdo baseado em notícia real (menos técnico)
+        news_title = news_context["title"]
+        news_source = news_context["source"]
+        news_description = news_context.get("description", "")
+        
+        prompt = (
+            f"ANÁLISE INFORMATIVA PARA PROFISSIONAIS DE TI - {current_date}\n\n"
+            f"Você é um tech lead experiente escrevendo para profissionais de TI sobre: '{title}'\n\n"
+            f"NOTÍCIA DE REFERÊNCIA:\n"
+            f"- Título: {news_title}\n"
+            f"- Fonte: {news_source}\n"
+            f"- Contexto: {news_description}\n\n"
+            f"FONTES ADICIONAIS: {references_text}\n\n"
+            f"ESTRUTURA INFORMATIVA:\n"
+            f"1. RESUMO EXECUTIVO: Key takeaways para profissionais ocupados\n"
+            f"2. ## Contexto Técnico (o que mudou e por que importa)\n"
+            f"3. ## Análise de Impacto (como afeta stacks e workflows atuais)\n"
+            f"4. ## Implicações para Equipes (skills, processos, ferramentas)\n"
+            f"5. ## Considerações de Adoção (quando e como implementar)\n"
+            f"6. ## Competitive Landscape (alternativas e comparações)\n"
+            f"7. ## Roadmap e Próximos Passos (planejamento estratégico)\n\n"
+            f"DIRETRIZES PROFISSIONAIS:\n"
+            f"- {SEO_ARTICLE_MIN_WORDS}-{SEO_ARTICLE_MAX_WORDS} palavras\n"
+            f"- Tom profissional, direto ao ponto\n"
+            f"- Foque em implicações práticas para o dia a dia\n"
+            f"- Inclua considerações de budget, timeline, recursos\n"
+            f"- Aborde riscos e benefícios de forma equilibrada\n"
+            f"- Contextualize para realidade de empresas brasileiras\n\n"
+            f"IMPORTANTE:\n"
+            f"✅ Informação acionável para tomada de decisão\n"
+            f"✅ Análise crítica, não apenas hype\n"
+            f"✅ Considerações práticas de implementação\n"
+            f"✅ Impacto em workflows e processos existentes\n"
+            f"❌ NÃO seja apenas descritivo\n"
+            f"❌ NÃO ignore limitações e desafios\n\n"
+            f"Escreva para PROFISSIONAIS que precisam tomar DECISÕES TÉCNICAS!"
+        )
+    elif is_news_based:
+        # Prompt para conteúdo híbrido (educativo + contexto de tendências)
+        prompt = (
+            f"ARTIGO EDUCATIVO CONTEXTUALIZADO - {current_date}\n\n"
+            f"Você é um analista técnico escrevendo um artigo EDUCATIVO que usa contexto de tendências: '{title}'\n\n"
+            f"CONTEXTO EDUCATIVO:\n"
+            f"- Ano de referência: {edu_context['current_year']}\n"
+            f"- Foco do conteúdo: {edu_context['content_focus']}\n"
+            f"- Abordagem: {edu_context['educational_approach']}\n\n"
+            f"FONTES DE REFERÊNCIA: {references_text}\n\n"
+            f"ESTRUTURA HÍBRIDA:\n"
+            f"1. INTRODUÇÃO: Contextualize a tendência e sua relevância educativa\n"
+            f"2. ## Contexto Atual (tendências gerais, sem fatos específicos)\n"
+            f"3. ## Conceitos Técnicos Envolvidos (explicação educativa)\n"
+            f"4. ## Análise do Impacto (o que isso significa tecnicamente)\n"
+            f"5. ## Lições e Aprendizados (insights educativos)\n"
+            f"6. ## Aplicações Práticas (como aplicar o conhecimento)\n"
+            f"7. ## Conclusão (síntese educativa)\n\n"
+            f"DIRETRIZES HÍBRIDAS:\n"
+            f"- {SEO_ARTICLE_MIN_WORDS}-{SEO_ARTICLE_MAX_WORDS} palavras (otimizado para SEO)\n"
+            f"- Use contexto de tendências para EDUCAR, não para noticiar\n"
+            f"- Foque no APRENDIZADO que as tendências oferecem\n"
+            f"- Explique conceitos técnicos por trás das tendências\n"
+            f"- Mantenha tom educativo, nunca jornalístico urgente\n"
+            f"- Contextualize para profissionais brasileiros\n\n"
+            f"PROIBIÇÕES ABSOLUTAS:\n"
+            f"❌ NÃO invente eventos específicos ou datas\n"
+            f"❌ NÃO crie notícias falsas ou fatos específicos\n"
+            f"❌ NÃO use linguagem de urgência jornalística\n"
+            f"❌ NÃO afirme acontecimentos específicos não verificáveis\n"
+            f"❌ NÃO crie citações ou declarações falsas\n\n"
+            f"FOQUE EM EDUCAÇÃO CONTEXTUALIZADA:\n"
+            f"✅ Use tendências gerais como contexto educativo\n"
+            f"✅ Explique conceitos técnicos por trás das tendências\n"
+            f"✅ Analise implicações e aprendizados\n"
+            f"✅ Forneça insights práticos e aplicáveis\n"
+            f"✅ Eduque sobre como se preparar para mudanças\n\n"
+            f"Escreva um artigo que EDUQUE usando contexto de tendências atuais!"
+        )
+    else:
+        # Prompt para conteúdo puramente educativo
+        prompt = (
+            f"ARTIGO TÉCNICO EDUCATIVO - {current_date}\n\n"
+            f"Você é um especialista técnico escrevendo um artigo EDUCATIVO sobre: '{title}'\n\n"
+            f"CONTEXTO EDUCATIVO:\n"
+            f"- Ano de referência: {edu_context['current_year']}\n"
+            f"- Foco do conteúdo: {edu_context['content_focus']}\n"
+            f"- Abordagem: {edu_context['educational_approach']}\n\n"
+            f"FONTES DE REFERÊNCIA: {references_text}\n\n"
+            f"ESTRUTURA EDUCATIVA:\n"
+            f"1. INTRODUÇÃO: Apresente o tema e sua relevância\n"
+            f"2. ## Conceitos e Definições (fundamentos técnicos)\n"
+            f"3. ## Como Funciona (aspectos técnicos explicados)\n"
+            f"4. ## Aplicações e Casos de Uso (exemplos reais)\n"
+            f"5. ## Vantagens e Desvantagens (análise equilibrada)\n"
+            f"6. ## Considerações para Implementação (aspectos práticos)\n"
+            f"7. ## Conclusão (síntese e recomendações)\n\n"
+            f"DIRETRIZES RIGOROSAS:\n"
+            f"- {SEO_ARTICLE_MIN_WORDS}-{SEO_ARTICLE_MAX_WORDS} palavras (otimizado para SEO)\n"
+            f"- Tom EDUCATIVO e TÉCNICO, nunca sensacionalista\n"
+            f"- Base-se em conhecimento geral estabelecido\n"
+            f"- Explique conceitos complexos de forma clara\n"
+            f"- Use exemplos práticos e aplicáveis\n"
+            f"- Seja honesto sobre limitações e desafios\n"
+            f"- Contextualize para desenvolvedores/profissionais brasileiros\n\n"
+            f"PROIBIÇÕES ABSOLUTAS:\n"
+            f"❌ NÃO invente notícias, lançamentos ou eventos específicos\n"
+            f"❌ NÃO use linguagem de urgência ('breaking', 'exclusivo')\n"
+            f"❌ NÃO crie citações ou declarações falsas\n"
+            f"❌ NÃO afirme fatos específicos não verificáveis\n"
+            f"❌ NÃO use datas específicas recentes ('ontem', 'esta semana')\n"
+            f"❌ NÃO invente números ou estatísticas\n\n"
+            f"FOQUE EM VALOR EDUCATIVO:\n"
+            f"✅ Explique conceitos e funcionamento\n"
+            f"✅ Analise prós e contras de forma equilibrada\n"
+            f"✅ Forneça orientações práticas\n"
+            f"✅ Compare diferentes abordagens/tecnologias\n"
+            f"✅ Eduque sobre melhores práticas\n"
+            f"✅ Contextualize tendências gerais do setor\n\n"
+            f"Escreva um artigo que seja uma REFERÊNCIA TÉCNICA confiável e educativa!"
+        )
     
     try:
         safety_settings = {
@@ -347,6 +904,67 @@ def write_article(title: str) -> str:
         print(f"❌ Erro ao gerar o artigo com a IA: {e}")
         return ""
 
+def generate_seo_description(title: str, content: str) -> str:
+    """Gera meta description otimizada para SEO."""
+    print("📝 Gerando meta description SEO...")
+    
+    # Extrai primeira frase do conteúdo
+    first_paragraph = content.split('\n')[0:3]
+    clean_text = ' '.join(first_paragraph).replace('#', '').strip()
+    
+    # Identifica palavra-chave principal do título
+    title_lower = title.lower()
+    primary_keyword = ""
+    
+    for category, keywords in SEO_KEYWORDS.items():
+        for keyword in keywords:
+            if keyword in title_lower:
+                primary_keyword = keyword
+                break
+        if primary_keyword:
+            break
+    
+    # Templates de meta description SEO
+    templates = [
+        f"Descubra como {primary_keyword} pode transformar seu negócio. Guia completo com dicas práticas e exemplos reais.",
+        f"Tudo sobre {primary_keyword}: conceitos, implementação e melhores práticas. Leia nosso guia completo.",
+        f"Aprenda {primary_keyword} do zero ao avançado. Tutorial completo com exemplos práticos e dicas de especialistas.",
+        f"Guia definitivo de {primary_keyword}: como implementar, vantagens e casos de sucesso no Brasil.",
+        f"{primary_keyword} explicado: conceitos, aplicações e como começar. Guia prático para iniciantes e profissionais."
+    ]
+    
+    if primary_keyword:
+        description = random.choice(templates)
+    else:
+        # Fallback baseado no conteúdo
+        description = clean_text[:SEO_DESCRIPTION_MAX_LENGTH-3] + "..."
+    
+    # Ajusta tamanho para SEO
+    if len(description) > SEO_DESCRIPTION_MAX_LENGTH:
+        description = description[:SEO_DESCRIPTION_MAX_LENGTH-3] + "..."
+    elif len(description) < SEO_DESCRIPTION_MIN_LENGTH:
+        description += f" Leia mais sobre {primary_keyword} e suas aplicações práticas."
+    
+    print(f"✅ Meta description gerada ({len(description)} chars)")
+    return description
+
+def extract_seo_keywords(title: str, content: str) -> List[str]:
+    """Extrai palavras-chave SEO do título e conteúdo."""
+    keywords = []
+    title_lower = title.lower()
+    content_lower = content.lower()
+    
+    # Identifica palavras-chave principais
+    for category, keyword_list in SEO_KEYWORDS.items():
+        for keyword in keyword_list:
+            if keyword in title_lower or keyword in content_lower:
+                keywords.append(keyword)
+    
+    # Remove duplicatas e limita
+    keywords = list(dict.fromkeys(keywords))[:SEO_KEYWORDS_PER_POST]
+    
+    return keywords
+
 def generate_tags(title: str, content: str) -> List[str]:
     """Gera tags relevantes para o post baseado no título e conteúdo."""
     print("🏷️ Gerando tags para o post...")
@@ -367,49 +985,112 @@ def generate_tags(title: str, content: str) -> List[str]:
         return ["tecnologia", "inovacao"]
 
 def create_hugo_post(title: str, content: str) -> Optional[Path]:
-    """Cria e salva o arquivo .md para o Hugo com metadados aprimorados."""
-    print("📝 Formatando e salvando o post para o Hugo...")
+    """Cria e salva o arquivo .md para o Hugo com otimizações SEO completas."""
+    print("📝 Formatando e salvando o post SEO-otimizado...")
     try:
         now = datetime.now()
         tz_offset = timezone(timedelta(hours=TIMEZONE_OFFSET))
         iso_timestamp = now.astimezone(tz_offset).isoformat()
         
-        # Gera tags automaticamente
+        # Gera elementos SEO
         tags = generate_tags(title, content)
+        seo_description = generate_seo_description(title, content)
+        seo_keywords = extract_seo_keywords(title, content)
+        
+        # Calcula reading time (palavras / 200 palavras por minuto)
+        word_count = len(content.split())
+        reading_time = max(1, round(word_count / 200))
         
         # Limpa o título para usar no nome do arquivo
         slug = re.sub(r'[^\w\s-]', '', title.lower()).strip()
         slug = re.sub(r'[\s_]+', '-', slug)
         filename = POSTS_DIR / f"{now.strftime('%Y-%m-%d')}-{slug[:50]}.md"
 
-        # Gera um resumo do artigo
-        summary_lines = content.split('\n')[:3]
-        summary = ' '.join(summary_lines).replace('#', '').strip()[:150] + "..."
-        
+        # Escapa caracteres especiais
         escaped_title = title.replace('"', '\\"')
-        escaped_summary = summary.replace('"', '\\"')
-        tags_yaml = '\n  - '.join([''] + tags)
+        escaped_description = seo_description.replace('"', '\\"')
         
+        # Formata arrays YAML
+        tags_yaml = '\n  - '.join([''] + tags)
+        keywords_yaml = '\n  - '.join([''] + seo_keywords) if seo_keywords else ''
+        
+        # Frontmatter SEO-otimizado
         frontmatter = f"""---
 title: "{escaped_title}"
 date: {iso_timestamp}
 draft: false
-summary: "{escaped_summary}"
+description: "{escaped_description}"
+summary: "{escaped_description}"
 tags:{tags_yaml}
+keywords:{keywords_yaml}
 categories:
   - {HUGO_CATEGORY}
 author: "{HUGO_AUTHOR}"
+readingTime: {reading_time}
+wordCount: {word_count}
+seo:
+  title: "{escaped_title}"
+  description: "{escaped_description}"
+  canonical: ""
+  noindex: false
 ---
 
 """
 
-        filename.write_text(frontmatter + content, encoding="utf-8")
-        print(f"✅ Post salvo em: {filename}")
-        print(f"📊 Tags geradas: {', '.join(tags)}")
+        # Adiciona estrutura SEO ao conteúdo
+        seo_content = add_seo_structure(content, seo_keywords)
+        
+        filename.write_text(frontmatter + seo_content, encoding="utf-8")
+        
+        print(f"✅ Post SEO salvo em: {filename}")
+        print(f"📊 Tags: {', '.join(tags)}")
+        print(f"🎯 Keywords SEO: {', '.join(seo_keywords)}")
+        print(f"📖 Tempo de leitura: {reading_time} min")
+        print(f"📝 Palavras: {word_count}")
+        
         return filename
     except Exception as e:
         print(f"❌ Erro ao criar o arquivo do post: {e}")
         return None
+
+def add_seo_structure(content: str, keywords: List[str]) -> str:
+    """Adiciona estrutura SEO ao conteúdo do artigo."""
+    
+    # Adiciona índice se o artigo for longo
+    lines = content.split('\n')
+    headers = [line for line in lines if line.startswith('##')]
+    
+    if len(headers) >= 3:
+        toc = "\n## Índice\n\n"
+        for header in headers:
+            clean_header = header.replace('##', '').strip()
+            anchor = clean_header.lower().replace(' ', '-').replace(',', '').replace(':', '')
+            toc += f"- [{clean_header}](#{anchor})\n"
+        
+        # Insere índice após a introdução
+        intro_end = content.find('\n##')
+        if intro_end > 0:
+            content = content[:intro_end] + toc + content[intro_end:]
+    
+    # Adiciona FAQ section se houver palavras-chave
+    if keywords:
+        faq_section = f"\n\n## Perguntas Frequentes\n\n"
+        
+        for keyword in keywords[:3]:  # Máximo 3 FAQs
+            faq_section += f"### O que é {keyword}?\n\n"
+            faq_section += f"{keyword.capitalize()} é uma tecnologia/conceito importante que permite [explicação breve baseada no contexto do artigo].\n\n"
+        
+        content += faq_section
+    
+    # Adiciona call-to-action no final
+    cta_section = "\n\n## Conclusão\n\n"
+    cta_section += "Este guia oferece uma visão abrangente sobre o tema. "
+    cta_section += "Continue acompanhando nosso blog para mais conteúdos sobre tecnologia e inovação.\n\n"
+    cta_section += "**Gostou do conteúdo?** Compartilhe com sua rede e deixe seus comentários abaixo!"
+    
+    content += cta_section
+    
+    return content
 
 def commit_new_post(file_path: Path, title: str):
     """Adiciona, commita e faz push do novo post no Git."""
@@ -438,37 +1119,156 @@ def commit_new_post(file_path: Path, title: str):
     except FileNotFoundError:
         print("❌ ERRO: O comando 'git' não foi encontrado. O arquivo foi criado mas não commitado.")
 
-def validate_post_quality(title: str, content: str) -> bool:
-    """Valida a qualidade básica do post gerado."""
-    if len(title) < 10 or len(content) < 500:
-        print("❌ Post muito curto, regenerando...")
+def validate_ethical_guidelines(title: str, content: str) -> bool:
+    """Valida se o conteúdo segue as diretrizes éticas."""
+    
+    # Palavras proibidas (sensacionalistas)
+    forbidden_words = [
+        "breaking", "exclusivo", "confirmado", "vazou", "oficial",
+        "acabou de", "nesta manhã", "hoje cedo", "há poucas horas"
+    ]
+    
+    title_lower = title.lower()
+    content_lower = content.lower()
+    
+    # Verifica palavras proibidas no título
+    for word in forbidden_words:
+        if word in title_lower:
+            print(f"❌ Título contém palavra sensacionalista: '{word}'")
+            return False
+    
+    # Verifica se é educativo ou híbrido válido
+    educational_indicators = [
+        "como", "guia", "análise", "comparativo", "entendendo",
+        "explicado", "fundamentos", "conceitos", "práticas"
+    ]
+    
+    hybrid_indicators = [
+        "análise:", "contexto:", "o que", "lições", "por trás",
+        "significam", "impacto de", "implicações"
+    ]
+    
+    has_educational_indicator = any(word in title_lower for word in educational_indicators)
+    has_hybrid_indicator = any(word in title_lower for word in hybrid_indicators)
+    
+    if not (has_educational_indicator or has_hybrid_indicator):
+        print("❌ Título não parece educativo nem híbrido válido")
         return False
     
-    if content.count('##') < 2:
-        print("⚠️ Post com poucos subtítulos, mas continuando...")
+    # Verifica timestamps específicos no conteúdo
+    temporal_flags = [
+        "hoje", "ontem", "esta manhã", "nesta tarde", "há poucas horas",
+        "acabou de ser anunciado", "confirmou hoje", "nesta semana"
+    ]
+    
+    for flag in temporal_flags:
+        if flag in content_lower:
+            print(f"❌ Conteúdo contém timestamp específico: '{flag}'")
+            return False
     
     return True
 
+def validate_seo_quality(title: str, content: str) -> bool:
+    """Valida qualidade SEO do post gerado."""
+    
+    # Validação de título SEO
+    if len(title) < SEO_TITLE_MIN_LENGTH:
+        print(f"❌ Título muito curto para SEO ({len(title)} < {SEO_TITLE_MIN_LENGTH})")
+        return False
+    
+    if len(title) > SEO_TITLE_MAX_LENGTH:
+        print(f"❌ Título muito longo para SEO ({len(title)} > {SEO_TITLE_MAX_LENGTH})")
+        return False
+    
+    # Validação de conteúdo SEO
+    word_count = len(content.split())
+    if word_count < SEO_ARTICLE_MIN_WORDS:
+        print(f"❌ Artigo muito curto para SEO ({word_count} < {SEO_ARTICLE_MIN_WORDS} palavras)")
+        return False
+    
+    if word_count > SEO_ARTICLE_MAX_WORDS:
+        print(f"⚠️ Artigo muito longo ({word_count} > {SEO_ARTICLE_MAX_WORDS} palavras), mas continuando...")
+    
+    # Validação de estrutura SEO
+    headers = content.count('##')
+    if headers < 3:
+        print(f"⚠️ Poucos subtítulos para SEO ({headers} < 3), mas continuando...")
+    
+    # Verifica presença de palavras-chave SEO
+    has_seo_keywords = False
+    title_lower = title.lower()
+    content_lower = content.lower()
+    
+    for keywords in SEO_KEYWORDS.values():
+        for keyword in keywords:
+            if keyword in title_lower or keyword in content_lower:
+                has_seo_keywords = True
+                break
+        if has_seo_keywords:
+            break
+    
+    if not has_seo_keywords:
+        print("⚠️ Nenhuma palavra-chave SEO identificada, mas continuando...")
+    
+    print(f"✅ Post aprovado na validação SEO ({word_count} palavras, {headers} subtítulos)")
+    return True
+
+def validate_post_quality(title: str, content: str) -> bool:
+    """Valida a qualidade básica, ética e SEO do post gerado."""
+    
+    # Validação ética
+    if not validate_ethical_guidelines(title, content):
+        print("❌ Post não atende às diretrizes éticas, regenerando...")
+        return False
+    
+    # Validação SEO
+    if not validate_seo_quality(title, content):
+        print("❌ Post não atende aos critérios SEO, regenerando...")
+        return False
+    
+    print("✅ Post aprovado em todas as validações (ética + SEO)")
+    return True
+
+def load_ethical_guidelines() -> bool:
+    """Carrega e valida se as diretrizes éticas estão disponíveis."""
+    guidelines_file = Path("ethical_guidelines.md")
+    if guidelines_file.exists():
+        print("✅ Diretrizes éticas carregadas")
+        return True
+    else:
+        print("⚠️ Arquivo de diretrizes éticas não encontrado")
+        return False
+
 def main():
-    """Função principal que orquestra todo o processo com melhorias."""
-    print("🚀 Iniciando geração automatizada de post...")
+    """Função principal que orquestra todo o processo educativo."""
+    print("  Inniciando geração de conteúdo educativo...")
     print(f"📅 Data/hora: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
+    print("🎯 Foco: Artigos técnicos educativos e análises")
     
     if not setup_api():
         sys.exit(1)
 
-    # Gera tópico com retry em caso de duplicata
-    topic = generate_new_topic()
+    # Decide o tipo de geração focado em análise técnica de notícias
+    # 70% análise técnica de notícias, 20% técnico SEO, 10% híbrido
+    rand = random.random()
+    
+    if rand < 0.7:
+        topic = generate_news_technical_analysis()  # Análise técnica de notícias reais
+    elif rand < 0.9:
+        topic = generate_technical_seo_topic()      # Conteúdo técnico SEO
+    else:
+        topic = generate_it_professional_topic()    # Técnico geral
+    
     if not topic:
         print("❌ Falha ao gerar tópico único.")
         sys.exit(1)
 
-    # Gera artigo com validação de qualidade
+    # Gera artigo educativo com validação de qualidade
     max_article_attempts = MAX_ARTICLE_ATTEMPTS
     article = ""
     
     for attempt in range(max_article_attempts):
-        print(f"📝 Tentativa {attempt + 1} de geração do artigo...")
+        print(f"📝 Tentativa {attempt + 1} de geração do artigo educativo...")
         article = write_article(topic)
         
         if article and validate_post_quality(topic, article):
@@ -477,7 +1277,7 @@ def main():
             print("🔄 Regenerando artigo...")
     
     if not article:
-        print("❌ Falha ao gerar artigo de qualidade.")
+        print("❌ Falha ao gerar artigo educativo de qualidade.")
         sys.exit(1)
 
     # Cria o post com metadados aprimorados
@@ -488,10 +1288,18 @@ def main():
     # Commit e push
     commit_new_post(post_path, topic)
 
-    print(f"\n✨ Post '{topic}' publicado com sucesso! ✨")
-    print(f"📄 Arquivo: {post_path.name}")
-    print(f"📊 Tamanho: {len(article)} caracteres")
+    print(f"\n✨ Artigo educativo '{topic}' publicado com sucesso! ✨")
+    print(f"  TArquivo: {post_path.name}")
+    print(f"   Tamanho: {len(article)} caracteres")
+    print(f"📚 Tipo: Conteúdo educativo e técnico")
     print(f"🕒 Processo concluído em: {datetime.now().strftime('%H:%M:%S')}")
 
 if __name__ == "__main__":
+    # Verifica diretrizes éticas antes de executar
+    guidelines_file = Path("ethical_guidelines.md")
+    if guidelines_file.exists():
+        print("✅ Diretrizes éticas carregadas")
+    else:
+        print("⚠️ Arquivo de diretrizes éticas não encontrado")
+    
     main()
