@@ -1,7 +1,8 @@
 baseURL = 'https://alphaworks.com.br/'
 defaultContentLanguage = "pt-br"
 title = 'Alphaworks'
-theme = "stack"
+theme = "newsroom"
+
 [pagination]
   pagerSize = 10
 
@@ -11,9 +12,7 @@ theme = "stack"
   authorbox = true
   pager = true
   post_meta = ["date", "categories"]
-
-[params.logo]
-  subtitle = "Inovação e Tecnologia"
+  logo = "" # Fix: simple string, not a table
 
 [params.sidebar]
   home = "right"
