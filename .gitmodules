@@ -1,3 +1,6 @@
+[submodule "themes/ananke"]
+    path = themes/ananke
+    url = https://github.com/theNewDynamic/gohugo-theme-ananke
 [submodule "themes/mainroad"]
-	path = themes/mainroad
-	url = https://github.com/Vimux/Mainroad.git
+    path = themes/mainroad
+    url = https://github.com/vimux/mainroad
