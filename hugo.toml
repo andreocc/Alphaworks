@@ -1,0 +1,26 @@
+baseURL = 'https://example.org/'
+defaultContentLanguage = "pt-br"
+title = 'Alphaworks'
+theme = "mainroad"
+[pagination]
+  pagerSize = 10
+
+[params]
+  description = "Blog da Alphaworks sobre tecnologia, inovação e produtividade."
+  readmore = true
+  authorbox = true
+  pager = true
+  post_meta = ["date", "categories"]
+
+[params.logo]
+  subtitle = "Inovação e Tecnologia"
+
+[params.sidebar]
+  home = "right"
+  list = "right"
+  single = "right"
+  widgets = ["search", "recent", "categories", "taglist"]
+
+[params.widgets]
+  recent_num = 5
+  tags_counter = true
