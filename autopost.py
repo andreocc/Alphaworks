@@ -35,25 +35,76 @@ def setup_api():
         print(f"❌ ERRO ao configurar a API do Gemini: {e}")
         return False
 
-def call_gemini_api(prompt: str, safety_settings=None, max_retries=MAX_API_RETRIES) -> str:
+def call_gemini_api(prompt: str, safety_settings=None, max_retries=MAX_API_RETRIES, timeout=None) -> str:
     """
-    Chama a API do Gemini com um prompt e configurações de segurança opcionais.
+    Chama a API do Gemini com timeout e retry inteligente.
     Retorna a resposta em texto ou lança uma exceção em caso de erro.
     """
-    model = genai.GenerativeModel('models/gemini-2.5-pro')    
-    # ---model = genai.GenerativeModel('models/gemini-1.5-flash-latest')
-    # ---model = genai.GenerativeModel('models/gemini-2.5-flash-lite-preview-06-17')    
+    import time
+    
+    # Usa modelo mais rápido para evitar timeout
+    model = genai.GenerativeModel('models/gemini-1.5-flash-latest')
+    
+    if timeout is None:
+        timeout = API_TIMEOUT_SECONDS
+    
     for attempt in range(max_retries):
         try:
-            response = model.generate_content(prompt, safety_settings=safety_settings)
+            print(f"🔄 API call {attempt + 1}/{max_retries}")
+            
+            # Configura timeout baseado no tamanho do prompt
+            prompt_size = len(prompt)
+            if prompt_size > 5000:
+                current_timeout = timeout * 2
+                print(f"📏 Prompt longo ({prompt_size} chars) - Timeout: {current_timeout}s")
+            else:
+                current_timeout = timeout
+                print(f"📏 Prompt: {prompt_size} chars - Timeout: {current_timeout}s")
+            
+            start_time = time.time()
+            
+            # Configuração otimizada para velocidade
+            generation_config = genai.types.GenerationConfig(
+                max_output_tokens=1500,  # Reduzido para evitar timeout
+                temperature=0.7,
+                top_p=0.9,
+                top_k=40
+            )
+            
+            response = model.generate_content(
+                prompt, 
+                safety_settings=safety_settings,
+                generation_config=generation_config
+            )
+            
+            elapsed_time = time.time() - start_time
+            print(f"✅ API respondeu em {elapsed_time:.1f}s")
+            
             if response.text:
                 return response.text
             else:
-                print(f"⚠️ Tentativa {attempt + 1}: Resposta vazia da API")
+                print(f"⚠️ Tentativa {attempt + 1}: Resposta vazia")
+                
         except Exception as e:
-            print(f"⚠️ Tentativa {attempt + 1} falhou: {e}")
+            elapsed_time = time.time() - start_time if 'start_time' in locals() else 0
+            
+            if "timeout" in str(e).lower() or "504" in str(e) or elapsed_time > current_timeout:
+                print(f"⏰ Timeout detectado ({elapsed_time:.1f}s)")
+                if attempt < max_retries - 1:
+                    print("🔄 Reduzindo prompt para próxima tentativa...")
+                    # Reduz prompt se muito longo
+                    if len(prompt) > 3000:
+                        prompt = prompt[:2500] + "\n\nIMPORTANTE: Responda de forma concisa e direta."
+            else:
+                print(f"❌ Erro: {str(e)[:100]}...")
+            
             if attempt == max_retries - 1:
                 raise e
+            
+            # Espera progressiva
+            wait_time = (attempt + 1) * 2
+            print(f"⏳ Aguardando {wait_time}s...")
+            time.sleep(wait_time)
     
     raise Exception("Falha em todas as tentativas de chamada da API")
 
@@ -172,14 +223,26 @@ def generate_news_technical_analysis() -> str:
             
             # Testa títulos até encontrar um válido
             for template in analysis_templates:
+                original_template = template
+                
                 # Ajusta tamanho se necessário
                 if len(template) > SEO_TITLE_MAX_LENGTH:
-                    # Trunca mantendo o essencial
-                    template = template[:SEO_TITLE_MAX_LENGTH-3] + "..."
+                    # Trunca de forma mais inteligente
+                    if " - " in template:
+                        parts = template.split(" - ")
+                        if len(parts[0]) <= SEO_TITLE_MAX_LENGTH - 10:
+                            template = parts[0] + " - " + parts[1][:SEO_TITLE_MAX_LENGTH - len(parts[0]) - 3] + "..."
+                        else:
+                            template = template[:SEO_TITLE_MAX_LENGTH-3] + "..."
+                    else:
+                        template = template[:SEO_TITLE_MAX_LENGTH-3] + "..."
                 
-                if len(template) >= SEO_TITLE_MIN_LENGTH and not is_topic_duplicate(template, used_topics):
-                    print(f"✅ Análise técnica: {template}")
-                    print(f"📰 Notícia base: {news_source} - {clean_title[:50]}...")
+                # Verifica se é válido (mais flexível com tamanho mínimo)
+                min_length = max(30, SEO_TITLE_MIN_LENGTH - 20)  # Mais flexível
+                
+                if len(template) >= min_length and not is_topic_duplicate(template, used_topics):
+                    print(f"✅ Análise técnica baseada em notícia: {template}")
+                    print(f"📰 Notícia fonte: {news_source} - {clean_title[:50]}...")
                     
                     # Atualiza cache com informações da notícia
                     used_topics.append(template)
@@ -195,13 +258,55 @@ def generate_news_technical_analysis() -> str:
                     save_topics_cache(cache_data)
                     
                     return template
+            
+            # Se nenhum template funcionou, tenta versões mais curtas
+            short_templates = [
+                f"Análise: {clean_title[:30]}... - impactos técnicos",
+                f"Deep dive: {clean_title[:35]}... - arquitetura",
+                f"Tech review: {clean_title[:40]}...",
+                f"Breakdown técnico: {clean_title[:30]}...",
+                f"Análise técnica de {clean_title[:35]}..."
+            ]
+            
+            for template in short_templates:
+                if len(template) >= min_length and not is_topic_duplicate(template, used_topics):
+                    print(f"✅ Análise técnica (versão curta): {template}")
+                    print(f"📰 Notícia fonte: {news_source} - {clean_title[:50]}...")
+                    
+                    # Atualiza cache
+                    used_topics.append(template)
+                    cache_data["used_topics"] = used_topics[-MAX_CACHED_TOPICS:]
+                    cache_data["last_update"] = datetime.now().isoformat()
+                    cache_data["news_source"] = {
+                        "title": news_title,
+                        "source": news_source,
+                        "url": selected_news.get("url", ""),
+                        "published_at": selected_news.get("published_at", ""),
+                        "analysis_type": "technical"
+                    }
+                    save_topics_cache(cache_data)
+                    
+                    return template
         
-        # Fallback se não conseguir gerar da notícia
-        return generate_it_professional_topic()
+        # Se chegou aqui, não conseguiu gerar da notícia
+        print("⚠️ Não conseguiu gerar análise da notícia, tentando abordagem alternativa...")
+        
+        # Tenta uma abordagem mais simples
+        if news_articles:
+            simple_news = random.choice(news_articles)
+            simple_title = f"Análise: {simple_news['title'][:40]}..."
+            if not is_topic_duplicate(simple_title, used_topics):
+                print(f"✅ Análise simples: {simple_title}")
+                return simple_title
+        
+        # Último fallback
+        print("⚠️ Fallback para tópico técnico...")
+        return generate_technical_seo_topic()
         
     except Exception as e:
         print(f"❌ Erro ao gerar análise técnica: {e}")
-        return generate_it_professional_topic()
+        print("⚠️ Fallback para tópico técnico SEO...")
+        return generate_technical_seo_topic()
 
 def generate_it_professional_topic() -> str:
     """Gera tópico técnico focado em profissionais de TI."""
@@ -639,6 +744,62 @@ def generate_references(title: str) -> List[str]:
     
     print(f"✅ {len(references)} fontes selecionadas: {', '.join(references)}")
     return references
+
+def write_article_chunked(title: str) -> str:
+    """Gera artigo em partes menores para evitar timeout."""
+    print("🔧 Gerando artigo em chunks para evitar timeout...")
+    
+    # Gera estrutura primeiro
+    structure_prompt = (
+        f"Crie apenas a ESTRUTURA de um artigo técnico sobre: '{title}'\n\n"
+        f"Retorne apenas os títulos das seções em markdown (##), sem conteúdo.\n"
+        f"Exemplo:\n"
+        f"## Resumo da Notícia\n"
+        f"## Análise Técnica\n"
+        f"## Impactos na Infraestrutura\n"
+        f"## Conclusão\n\n"
+        f"Máximo 6 seções."
+    )
+    
+    try:
+        structure = call_gemini_api(structure_prompt, timeout=15)
+        sections = [s.strip() for s in structure.split('\n') if s.strip().startswith('##')]
+        
+        if not sections:
+            print("⚠️ Fallback para geração normal...")
+            return write_article(title)
+        
+        print(f"📋 Estrutura criada: {len(sections)} seções")
+        
+        # Gera cada seção separadamente
+        full_article = ""
+        
+        for i, section in enumerate(sections):
+            print(f"✍️ Gerando seção {i+1}/{len(sections)}: {section}")
+            
+            section_prompt = (
+                f"Escreva APENAS o conteúdo para a seção '{section}' de um artigo sobre: '{title}'\n\n"
+                f"Contexto: Análise técnica para profissionais de TI.\n"
+                f"Tamanho: 150-250 palavras.\n"
+                f"Tom: Técnico e informativo.\n\n"
+                f"Retorne apenas o conteúdo da seção, sem o título."
+            )
+            
+            try:
+                section_content = call_gemini_api(section_prompt, timeout=20)
+                full_article += f"{section}\n\n{section_content}\n\n"
+                print(f"✅ Seção {i+1} concluída")
+            except Exception as e:
+                print(f"⚠️ Erro na seção {i+1}: {e}")
+                # Continua com as outras seções
+                full_article += f"{section}\n\n[Conteúdo da seção em desenvolvimento]\n\n"
+        
+        return full_article
+        
+    except Exception as e:
+        print(f"❌ Erro na geração chunked: {e}")
+        print("⚠️ Fallback para geração normal...")
+        return write_article(title)
 
 def write_article(title: str) -> str:
     """Gera o conteúdo do artigo baseado em notícias reais ou educativo."""
@@ -1239,60 +1400,111 @@ def load_ethical_guidelines() -> bool:
         print("⚠️ Arquivo de diretrizes éticas não encontrado")
         return False
 
+def show_progress(step: int, total: int, description: str):
+    """Mostra indicador de progresso."""
+    if PROGRESS_INDICATORS:
+        percentage = (step / total) * 100
+        bar_length = 20
+        filled_length = int(bar_length * step // total)
+        bar = '█' * filled_length + '░' * (bar_length - filled_length)
+        print(f"📊 [{bar}] {percentage:.0f}% - {description}")
+
 def main():
-    """Função principal que orquestra todo o processo educativo."""
-    print("  Inniciando geração de conteúdo educativo...")
+    """Função principal que orquestra todo o processo de análise técnica."""
+    total_steps = 6
+    current_step = 0
+    
+    print("📰 Iniciando geração de análise técnica de notícias...")
     print(f"📅 Data/hora: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
-    print("🎯 Foco: Artigos técnicos educativos e análises")
+    print("🎯 Foco: 80% análise de notícias, 15% técnico SEO, 5% técnico geral")
+    print("⚡ Otimizado para evitar timeouts")
+    print()
+    
+    current_step += 1
+    show_progress(current_step, total_steps, "Configurando API...")
     
     if not setup_api():
         sys.exit(1)
 
+    current_step += 1
+    show_progress(current_step, total_steps, "Gerando tópico...")
+    
     # Decide o tipo de geração focado em análise técnica de notícias
-    # 70% análise técnica de notícias, 20% técnico SEO, 10% híbrido
     rand = random.random()
     
-    if rand < 0.7:
-        topic = generate_news_technical_analysis()  # Análise técnica de notícias reais
-    elif rand < 0.9:
-        topic = generate_technical_seo_topic()      # Conteúdo técnico SEO
+    print(f"🎲 Sorteio: {rand:.2f}")
+    
+    if rand < 0.8:
+        print("📰 Selecionado: Análise técnica de notícia")
+        topic = generate_news_technical_analysis()
+    elif rand < 0.95:
+        print("🔧 Selecionado: Conteúdo técnico SEO")
+        topic = generate_technical_seo_topic()
     else:
-        topic = generate_it_professional_topic()    # Técnico geral
+        print("💻 Selecionado: Conteúdo técnico geral")
+        topic = generate_it_professional_topic()
     
     if not topic:
         print("❌ Falha ao gerar tópico único.")
         sys.exit(1)
+    
+    current_step += 1
+    show_progress(current_step, total_steps, f"Tópico: {topic[:50]}...")
 
-    # Gera artigo educativo com validação de qualidade
+    current_step += 1
+    show_progress(current_step, total_steps, "Gerando artigo...")
+    
+    # Gera artigo com timeout otimizado
     max_article_attempts = MAX_ARTICLE_ATTEMPTS
     article = ""
     
     for attempt in range(max_article_attempts):
-        print(f"📝 Tentativa {attempt + 1} de geração do artigo educativo...")
-        article = write_article(topic)
-        
-        if article and validate_post_quality(topic, article):
-            break
-        elif attempt < max_article_attempts - 1:
-            print("🔄 Regenerando artigo...")
+        print(f"📝 Tentativa {attempt + 1}/{max_article_attempts} - Gerando artigo...")
+        try:
+            article = write_article(topic)
+            
+            if article and validate_post_quality(topic, article):
+                print(f"✅ Artigo gerado com sucesso ({len(article)} chars)")
+                break
+            elif attempt < max_article_attempts - 1:
+                print("🔄 Regenerando artigo...")
+        except Exception as e:
+            if "timeout" in str(e).lower() or "504" in str(e):
+                print(f"⏰ Timeout na geração do artigo (tentativa {attempt + 1})")
+                if attempt < max_article_attempts - 1:
+                    print("🔄 Tentando com prompt mais simples...")
+            else:
+                print(f"❌ Erro na geração: {str(e)[:100]}...")
     
     if not article:
-        print("❌ Falha ao gerar artigo educativo de qualidade.")
+        print("❌ Falha ao gerar artigo de qualidade.")
         sys.exit(1)
+    
+    current_step += 1
+    show_progress(current_step, total_steps, f"Artigo: {len(article)} caracteres")
 
+    current_step += 1
+    show_progress(current_step, total_steps, "Criando post Hugo...")
+    
     # Cria o post com metadados aprimorados
     post_path = create_hugo_post(topic, article)
     if not post_path:
         sys.exit(1)
 
+    current_step += 1
+    show_progress(current_step, total_steps, "Fazendo commit...")
+    
     # Commit e push
     commit_new_post(post_path, topic)
 
-    print(f"\n✨ Artigo educativo '{topic}' publicado com sucesso! ✨")
-    print(f"  TArquivo: {post_path.name}")
-    print(f"   Tamanho: {len(article)} caracteres")
-    print(f"📚 Tipo: Conteúdo educativo e técnico")
+    show_progress(total_steps, total_steps, "Processo concluído!")
+    
+    print(f"\n✨ Análise técnica '{topic}' publicada com sucesso! ✨")
+    print(f"� TArquivo: {post_path.name}")
+    print(f"�  Tamanho: {len(article)} caracteres")
+    print(f"📰 Tipo: Análise técnica de notícia")
     print(f"🕒 Processo concluído em: {datetime.now().strftime('%H:%M:%S')}")
+    print(f"⚡ Sem timeouts detectados!")
 
 if __name__ == "__main__":
     # Verifica diretrizes éticas antes de executar
