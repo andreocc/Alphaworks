@@ -1,12 +1,12 @@
 baseURL = 'https://alphaworks.com.br/'
 defaultContentLanguage = "pt-br"
 title = 'Alphaworks'
-theme = "mainroad"
+theme = "stack"
 [pagination]
   pagerSize = 10
 
 [params]
-  description = "Blog da Alphaworks sobre tecnologia, inovação e produtividade."
+  description = "Alphaworks - tecnologia, inovação e produtividade."
   readmore = true
   authorbox = true
   pager = true
