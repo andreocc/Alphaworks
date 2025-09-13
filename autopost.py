@@ -13,6 +13,7 @@ import google.generativeai as genai
 from config import *
 from trends import *
 from news_api import get_current_news, get_news_context
+from content_formatting import format_content
 
 # --- Configurações ---
 POSTS_DIR = Path("content/posts")
@@ -902,14 +903,18 @@ def write_article(title: str) -> str:
             f"8. ## Conclusão Técnica\n"
             f"   - Recomendações para profissionais\n"
             f"   - Próximos passos e tendências\n\n"
-            f"DIRETRIZES ESPECÍFICAS:\n"
-            f"- {SEO_ARTICLE_MIN_WORDS}-{SEO_ARTICLE_MAX_WORDS} palavras\n"
-            f"- Use a notícia como BASE, mas vá muito além dela\n"
-            f"- Inclua números, métricas, especificações técnicas\n"
-            f"- Mencione ferramentas, frameworks, tecnologias específicas\n"
-            f"- Foque em aspectos práticos de implementação\n"
-            f"- Linguagem técnica para profissionais experientes\n"
-            f"- Contextualize para realidade de empresas brasileiras\n\n"
+            f"PADRÕES DE QUALIDADE JORNALÍSTICA:\n"
+            f"- {SEO_ARTICLE_MIN_WORDS}-{SEO_ARTICLE_MAX_WORDS} palavras com densidade informacional alta\n"
+            f"- LEAD jornalístico: responda O QUE, QUEM, QUANDO, ONDE, POR QUE nos primeiros parágrafos\n"
+            f"- Estrutura de pirâmide invertida: informações mais importantes primeiro\n"
+            f"- Fontes credíveis e citações específicas (não genéricas)\n"
+            f"- Dados concretos, estatísticas e números verificáveis\n"
+            f"- Contexto histórico e comparações relevantes\n"
+            f"- Linguagem precisa, objetiva e sem redundâncias\n"
+            f"- Transições lógicas entre parágrafos\n"
+            f"- Evite clichês e frases feitas\n"
+            f"- Cada parágrafo deve ter uma ideia central clara\n"
+            f"- Conclusões baseadas em evidências apresentadas\n\n"
             f"ELEMENTOS OBRIGATÓRIOS:\n"
             f"✅ Análise técnica que vai além da notícia superficial\n"
             f"✅ Especificações e requisitos detalhados\n"
@@ -1051,18 +1056,26 @@ def write_article(title: str) -> str:
         article = call_gemini_api(prompt, safety_settings=safety_settings)
         
         if article:
-            # Adiciona seção de referências ao final
-            article += "\n\n## Fontes\n\n"
-            for i, ref in enumerate(references, 1):
-                article += f"{i}. {ref}\n"
+            # Aplica storytelling, formatação avançada 
+            article = add_storytelling_elements(article)
+            article = improve_headings_structure(article)
+            article = add_visual_elements(article)
+            article = format_content(article)
             
-            print("✅ Artigo gerado com sucesso (incluindo fontes).")
+            # Adiciona seção de referências formatada
+            article += "\n\n---\n\n## 📚 Fontes e Referências\n\n"
+            for i, ref in enumerate(references, 1):
+                article += f"{i}. **{ref}**\n"
+            
+            # CTA engajante já foi aplicado pela função add_engaging_cta
+            
+            print("✅ Artigo gerado e formatado com sucesso.")
             return article
         else:
             print("❌ A IA não retornou um artigo válido.")
             return ""
     except Exception as e:
-        print(f"❌ Erro ao gerar o artigo com a IA: {e}")
+        print(f"❌ Erro ao gerar o artigo: {e}")
         return ""
 
 def generate_seo_description(title: str, content: str) -> str:
@@ -1198,8 +1211,9 @@ seo:
 
 """
 
-        # Adiciona estrutura SEO ao conteúdo
-        seo_content = add_seo_structure(content, seo_keywords)
+        # Adiciona CTA engajante e estrutura SEO ao conteúdo
+        content_with_cta = add_engaging_cta(content, title)
+        seo_content = add_seo_structure(content_with_cta, seo_keywords)
         
         filename.write_text(frontmatter + seo_content, encoding="utf-8")
         
@@ -1213,6 +1227,178 @@ seo:
     except Exception as e:
         print(f"❌ Erro ao criar o arquivo do post: {e}")
         return None
+
+def add_storytelling_elements(content: str) -> str:
+    """Adiciona elementos de storytelling para melhor engajamento."""
+    
+    # Adiciona hook de abertura se não existir
+    lines = content.split('\n')
+    first_paragraph = lines[0] if lines else ""
+    
+    if not any(word in first_paragraph.lower() for word in ['imagine', 'você já', 'lembra quando', 'e se']):
+        storytelling_hooks = [
+            "Imagine descobrir que sua infraestrutura atual pode estar limitando o crescimento da empresa...",
+            "Você já se perguntou como grandes empresas conseguem escalar tão rapidamente?",
+            "Lembra quando deploy significava noites em claro e dedos cruzados?",
+            "E se eu te dissesse que existe uma forma mais eficiente de fazer isso?",
+            "Três anos atrás, ninguém imaginava que isso seria possível..."
+        ]
+        
+        import random
+        hook = random.choice(storytelling_hooks)
+        content = f"{hook}\n\n{content}"
+    
+    # Adiciona transições narrativas entre seções
+    sections = content.split('##')
+    if len(sections) > 2:
+        transitions = [
+            "\n\nMas isso é apenas o começo da história...\n\n",
+            "\n\nAgora, vamos ao que realmente importa:\n\n", 
+            "\n\nAqui é onde as coisas ficam interessantes:\n\n",
+            "\n\nE aqui está o plot twist:\n\n",
+            "\n\nPara entender melhor, vamos analisar:\n\n"
+        ]
+        
+        for i in range(1, min(len(sections), 4)):
+            if i < len(transitions):
+                sections[i] = transitions[i-1] + "##" + sections[i]
+        
+        content = "##".join(sections)
+    
+    return content
+
+
+def improve_headings_structure(content: str) -> str:
+    """Melhora a estrutura dos subtítulos com emojis consistentes."""
+    
+    # Mapeia palavras-chave para emojis apropriados
+    emoji_map = {
+        'análise': '🔍',
+        'técnica': '⚙️', 
+        'segurança': '🛡️',
+        'performance': '⚡',
+        'implementação': '🚀',
+        'arquitetura': '🏗️',
+        'infraestrutura': '🏢',
+        'desenvolvimento': '💻',
+        'devops': '🔄',
+        'cloud': '☁️',
+        'dados': '📊',
+        'api': '🔌',
+        'mobile': '📱',
+        'web': '🌐',
+        'ia': '🤖',
+        'machine learning': '🧠',
+        'blockchain': '⛓️',
+        'conclusão': '🎯',
+        'próximos passos': '➡️',
+        'recursos': '📚'
+    }
+    
+    lines = content.split('\n')
+    improved_lines = []
+    
+    for line in lines:
+        if line.startswith('## ') and not line.startswith('### '):
+            # Remove emojis existentes
+            clean_line = re.sub(r'[^\w\s\-:]', '', line[3:]).strip()
+            
+            # Encontra emoji apropriado
+            emoji = '📋'  # emoji padrão
+            for keyword, emoji_char in emoji_map.items():
+                if keyword.lower() in clean_line.lower():
+                    emoji = emoji_char
+                    break
+            
+            # Reconstrói o título
+            improved_line = f"## {emoji} {clean_line}"
+            improved_lines.append(improved_line)
+        else:
+            improved_lines.append(line)
+    
+    return '\n'.join(improved_lines)
+
+
+def add_visual_elements(content: str) -> str:
+    """Adiciona elementos visuais para melhorar a experiência de leitura."""
+    
+    # Adiciona separadores visuais entre seções principais
+    content = re.sub(r'\n(## [^#])', r'\n---\n\n\1', content)
+    
+    # Destaca informações importantes com callouts
+    important_patterns = [
+        (r'(É importante notar que|Vale destacar que|Importante:|Atenção:)', r'> **💡 Destaque:** \1'),
+        (r'(Cuidado|Atenção|Aviso)', r'> **⚠️ Atenção:** \1'),
+        (r'(Dica|Pro tip|Sugestão)', r'> **💡 Dica:** \1'),
+        (r'(Exemplo|Por exemplo)', r'> **📝 Exemplo:** \1')
+    ]
+    
+    for pattern, replacement in important_patterns:
+        content = re.sub(pattern, replacement, content, flags=re.IGNORECASE)
+    
+    # Adiciona ícones para listas quando apropriado
+    content = re.sub(r'^- (Vantagem|Benefício)', r'✅ \1', content, flags=re.MULTILINE)
+    content = re.sub(r'^- (Desvantagem|Limitação|Problema)', r'❌ \1', content, flags=re.MULTILINE)
+    content = re.sub(r'^- (Requisito|Necessário)', r'📋 \1', content, flags=re.MULTILINE)
+    content = re.sub(r'^- (Ferramenta|Tool)', r'🛠️ \1', content, flags=re.MULTILINE)
+    
+    return content
+
+
+def add_engaging_cta(content: str, title: str) -> str:
+    """Adiciona call-to-actions mais engajantes ao final do conteúdo."""
+    
+    # Remove CTAs genéricos existentes
+    content = re.sub(r'\*\*Gostou do conteúdo\?\*\*.*?$', '', content, flags=re.MULTILINE | re.DOTALL)
+    content = re.sub(r'### 💬 Discussão.*?$', '', content, flags=re.MULTILINE | re.DOTALL)
+    content = re.sub(r'## Conclusão\n\nEste guia oferece.*?$', '', content, flags=re.MULTILINE | re.DOTALL)
+    
+    # CTAs específicos baseados no tipo de conteúdo
+    if any(word in title.lower() for word in ['análise', 'deep dive', 'breakdown']):
+        cta = """
+## 💬 Vamos Continuar a Conversa
+
+**Qual sua experiência com essa tecnologia?** Compartilhe nos comentários:
+- Já implementou algo similar na sua empresa?
+- Quais desafios enfrentou durante a adoção?
+- Que outras análises técnicas gostaria de ver?
+
+**📧 Quer receber mais conteúdo técnico como este?** 
+Conecte-se comigo no LinkedIn para discussões sobre arquitetura, DevOps e inovação.
+
+**🔄 Achou útil?** Compartilhe com sua equipe - conhecimento técnico é melhor quando compartilhado!
+"""
+    elif any(word in title.lower() for word in ['security', 'segurança', 'vulnerabilidade']):
+        cta = """
+## 🛡️ Sua Infraestrutura Está Preparada?
+
+**Avalie sua postura de segurança:**
+- Sua equipe conhece essas vulnerabilidades?
+- Seus sistemas estão atualizados com as últimas práticas?
+- Tem um plano de resposta a incidentes?
+
+**💡 Precisa de uma segunda opinião?** 
+Compartilhe este artigo com seu time de segurança e discutam as implicações.
+
+**🚀 Próximo passo:** Implemente pelo menos uma das recomendações desta semana.
+"""
+    else:
+        cta = """
+## 🚀 Próximos Passos
+
+**Para implementar essas ideias:**
+1. Discuta com sua equipe os pontos mais relevantes
+2. Identifique quick wins que podem ser implementados rapidamente  
+3. Planeje um piloto para testar os conceitos
+
+**💭 Sua opinião importa:** Que outros tópicos técnicos gostaria de ver explorados?
+
+**🔗 Mantenha-se atualizado:** Siga para mais análises técnicas e insights do mercado.
+"""
+    
+    content += cta
+    return content
+
 
 def add_seo_structure(content: str, keywords: List[str]) -> str:
     """Adiciona estrutura SEO ao conteúdo do artigo."""
@@ -1243,13 +1429,7 @@ def add_seo_structure(content: str, keywords: List[str]) -> str:
         
         content += faq_section
     
-    # Adiciona call-to-action no final
-    cta_section = "\n\n## Conclusão\n\n"
-    cta_section += "Este guia oferece uma visão abrangente sobre o tema. "
-    cta_section += "Continue acompanhando nosso blog para mais conteúdos sobre tecnologia e inovação.\n\n"
-    cta_section += "**Gostou do conteúdo?** Compartilhe com sua rede e deixe seus comentários abaixo!"
-    
-    content += cta_section
+    # CTA engajante já foi aplicado anteriormente
     
     return content
 
