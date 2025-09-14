@@ -807,21 +807,35 @@ def write_article(title: str) -> str:
     
     # Detecta se é conteúdo baseado em notícias
     is_news_based = any(word in title.lower() for word in [
-        "análise:", "contexto:", "o que", "lições", "por trás", 
-        "significam", "impacto de", "entendendo", "como", "após"
+        "análise", "contexto:", "o que", "lições", "por trás", 
+        "significam", "impacto de", "entendendo", "como", "após",
+        "deep dive:", "tech breakdown:", "security review:"
     ])
     
     # Obtém contexto de notícia se disponível
     news_context = None
     if is_news_based:
-        # Extrai palavras-chave do título para buscar notícia relevante
-        title_keywords = []
-        for category_keywords in SEO_KEYWORDS.values():
-            for keyword in category_keywords:
-                if keyword.lower() in title.lower():
-                    title_keywords.append(keyword)
+        # Primeiro tenta obter do cache (notícia usada para gerar o título)
+        cache_data = load_topics_cache()
+        cached_news = cache_data.get("news_source")
         
-        news_context = get_news_context(title_keywords)
+        if cached_news and cached_news.get("title"):
+            news_context = cached_news
+            print(f"📰 Usando notícia do cache: {cached_news['title'][:50]}...")
+
+        else:
+            # Fallback: busca notícia relevante
+            title_keywords = []
+            for category_keywords in SEO_KEYWORDS.values():
+                for keyword in category_keywords:
+                    if keyword.lower() in title.lower():
+                        title_keywords.append(keyword)
+            
+            news_context = get_news_context(title_keywords)
+    
+
+
+    print(f"� DebuCg final - is_news_analysis: {is_news_analysis if 'is_news_analysis' in locals() else 'não definido ainda'}")
     
     if news_context:
         print(f'✍️ Escrevendo artigo baseado em notícia real: "{title}"...')
