@@ -872,37 +872,35 @@ def write_article(title: str) -> str:
             f"- Por que isso importa para profissionais de TI\n"
             f"- Quais são as implicações práticas\n"
             f"- Como isso afeta infraestrutura e operações\n\n"
-            f"ESTRUTURA DA ANÁLISE:\n"
-            f"1. ## Resumo da Notícia\n"
-            f"   - Contextualize a notícia original de forma técnica\n"
-            f"   - Explique o que realmente aconteceu\n\n"
-            f"2. ## Análise Técnica Profunda\n"
-            f"   - Arquitetura e componentes envolvidos\n"
-            f"   - Stack tecnológico e ferramentas\n"
-            f"   - Especificações e requisitos técnicos\n\n"
-            f"3. ## Impactos na Infraestrutura\n"
-            f"   - Como isso afeta sistemas existentes\n"
-            f"   - Requisitos de hardware/software\n"
-            f"   - Considerações de escalabilidade\n\n"
-            f"4. ## Perspectiva DevOps\n"
-            f"   - Impactos em CI/CD e deployment\n"
-            f"   - Monitoring e observabilidade\n"
-            f"   - Estratégias de rollback e disaster recovery\n\n"
-            f"5. ## Security & Compliance\n"
-            f"   - Vulnerabilidades e vetores de ataque\n"
-            f"   - Mitigações e hardening\n"
-            f"   - Compliance e regulamentações\n\n"
-            f"6. ## Performance & Benchmarks\n"
-            f"   - Métricas de performance esperadas\n"
-            f"   - Comparações com soluções existentes\n"
-            f"   - Gargalos e otimizações\n\n"
-            f"7. ## Implementação Prática\n"
-            f"   - Roadmap de adoção\n"
-            f"   - Custos e ROI\n"
-            f"   - Riscos e mitigações\n\n"
-            f"8. ## Conclusão Técnica\n"
-            f"   - Recomendações para profissionais\n"
-            f"   - Próximos passos e tendências\n\n"
+            f"ESTRUTURA JORNALÍSTICA PROFISSIONAL:\n"
+            f"1. ## Lead Jornalístico\n"
+            f"   - Parágrafo de abertura com os 5 W's (O que, Quem, Quando, Onde, Por que)\n"
+            f"   - Impacto imediato e relevância para o leitor\n"
+            f"   - Dados quantitativos quando disponíveis\n\n"
+            f"2. ## Contexto e Background\n"
+            f"   - Histórico da tecnologia/empresa/situação\n"
+            f"   - Desenvolvimentos anteriores relevantes\n"
+            f"   - Posicionamento no mercado atual\n\n"
+            f"3. ## Análise Técnica Aprofundada\n"
+            f"   - Especificações técnicas detalhadas\n"
+            f"   - Comparação com concorrentes/alternativas\n"
+            f"   - Arquitetura e componentes envolvidos\n\n"
+            f"4. ## Impactos e Implicações\n"
+            f"   - Efeitos na indústria e mercado\n"
+            f"   - Mudanças para desenvolvedores e empresas\n"
+            f"   - Considerações de adoção e migração\n\n"
+            f"5. ## Perspectiva de Especialistas\n"
+            f"   - Análise de tendências do setor\n"
+            f"   - Desafios e oportunidades identificados\n"
+            f"   - Previsões baseadas em dados\n\n"
+            f"6. ## Implementação Prática\n"
+            f"   - Guia passo-a-passo para adoção\n"
+            f"   - Custos, recursos e timeline realistas\n"
+            f"   - Métricas de sucesso e KPIs\n\n"
+            f"7. ## Conclusão Editorial\n"
+            f"   - Síntese dos pontos principais\n"
+            f"   - Recomendações baseadas na análise\n"
+            f"   - Próximos desenvolvimentos a acompanhar\n\n"
             f"PADRÕES DE QUALIDADE JORNALÍSTICA:\n"
             f"- {SEO_ARTICLE_MIN_WORDS}-{SEO_ARTICLE_MAX_WORDS} palavras com densidade informacional alta\n"
             f"- LEAD jornalístico: responda O QUE, QUEM, QUANDO, ONDE, POR QUE nos primeiros parágrafos\n"
@@ -916,14 +914,28 @@ def write_article(title: str) -> str:
             f"- Cada parágrafo deve ter uma ideia central clara\n"
             f"- Conclusões baseadas em evidências apresentadas\n\n"
             f"ELEMENTOS OBRIGATÓRIOS:\n"
+            f"✅ Lead jornalístico com os 5 W's nos primeiros parágrafos\n"
+            f"✅ Dados específicos: números, percentuais, versões, datas\n"
+            f"✅ Citações de fontes credíveis e especialistas\n"
             f"✅ Análise técnica que vai além da notícia superficial\n"
-            f"✅ Especificações e requisitos detalhados\n"
-            f"✅ Considerações práticas de implementação\n"
-            f"✅ Impactos em infraestrutura e operações\n"
-            f"✅ Métricas, benchmarks e números concretos\n"
-            f"✅ Ferramentas e tecnologias específicas\n"
-            f"✅ Estratégias de deployment e monitoring\n\n"
-            f"Transforme a notícia em uma ANÁLISE TÉCNICA PROFUNDA que profissionais de TI realmente precisam!"
+            f"✅ Comparações com concorrentes e alternativas\n"
+            f"✅ Contexto histórico e posicionamento no mercado\n"
+            f"✅ Impactos práticos para desenvolvedores e empresas\n"
+            f"✅ Conclusões baseadas em evidências apresentadas\n\n"
+            f"QUALIDADE EDITORIAL OBRIGATÓRIA:\n"
+            f"🎯 Cada parágrafo = uma ideia central (3-5 frases)\n"
+            f"🎯 Transições lógicas entre parágrafos e seções\n"
+            f"🎯 Linguagem precisa, sem redundâncias ou clichês\n"
+            f"🎯 Verbos no tempo correto (presente/passado)\n"
+            f"🎯 Estrutura de pirâmide invertida (mais importante primeiro)\n\n"
+            f"INSTRUÇÕES CRÍTICAS PARA QUALIDADE JORNALÍSTICA:\n"
+            f"• PRIMEIRO PARÁGRAFO deve responder: O QUE aconteceu, QUEM está envolvido, QUANDO\n"
+            f"• Use conectores lógicos: 'Além disso', 'Por outro lado', 'Consequentemente'\n"
+            f"• Parágrafos de 3-5 frases cada, máximo 100 palavras\n"
+            f"• Dados específicos: números, percentuais, versões, datas\n"
+            f"• Linguagem precisa e objetiva, sem exageros ou clichês\n"
+            f"• Estrutura de pirâmide invertida: mais importante primeiro\n\n"
+            f"Escreva uma ANÁLISE JORNALÍSTICA TÉCNICA que profissionais de TI respeitarão!"
         )
     elif news_context:
         # Prompt para conteúdo baseado em notícia real (menos técnico)
@@ -1056,8 +1068,9 @@ def write_article(title: str) -> str:
         article = call_gemini_api(prompt, safety_settings=safety_settings)
         
         if article:
-            # Aplica storytelling, formatação avançada 
+            # Aplica melhorias jornalísticas e formatação
             article = add_storytelling_elements(article)
+            article = improve_journalistic_language(article)
             article = improve_headings_structure(article)
             article = add_visual_elements(article)
             article = format_content(article)
@@ -1235,28 +1248,19 @@ def add_storytelling_elements(content: str) -> str:
     lines = content.split('\n')
     first_paragraph = lines[0] if lines else ""
     
-    if not any(word in first_paragraph.lower() for word in ['imagine', 'você já', 'lembra quando', 'e se']):
-        storytelling_hooks = [
-            "Imagine descobrir que sua infraestrutura atual pode estar limitando o crescimento da empresa...",
-            "Você já se perguntou como grandes empresas conseguem escalar tão rapidamente?",
-            "Lembra quando deploy significava noites em claro e dedos cruzados?",
-            "E se eu te dissesse que existe uma forma mais eficiente de fazer isso?",
-            "Três anos atrás, ninguém imaginava que isso seria possível..."
-        ]
-        
-        import random
-        hook = random.choice(storytelling_hooks)
-        content = f"{hook}\n\n{content}"
+    # Remove hooks não-jornalísticos - o lead deve ser direto e informativo
+    # Em jornalismo técnico, a abertura deve ser factual, não especulativa
+    pass
     
-    # Adiciona transições narrativas entre seções
+    # Adiciona transições jornalísticas profissionais entre seções
     sections = content.split('##')
     if len(sections) > 2:
         transitions = [
-            "\n\nMas isso é apenas o começo da história...\n\n",
-            "\n\nAgora, vamos ao que realmente importa:\n\n", 
-            "\n\nAqui é onde as coisas ficam interessantes:\n\n",
-            "\n\nE aqui está o plot twist:\n\n",
-            "\n\nPara entender melhor, vamos analisar:\n\n"
+            "\n\nPara compreender o impacto completo, é necessário analisar:\n\n",
+            "\n\nOs dados revelam aspectos importantes:\n\n", 
+            "\n\nA análise técnica mostra que:\n\n",
+            "\n\nEspecialistas do setor apontam:\n\n",
+            "\n\nAs implicações práticas incluem:\n\n"
         ]
         
         for i in range(1, min(len(sections), 4)):
@@ -1266,6 +1270,62 @@ def add_storytelling_elements(content: str) -> str:
         content = "##".join(sections)
     
     return content
+
+
+def improve_journalistic_language(content: str) -> str:
+    """Melhora a linguagem para padrões jornalísticos profissionais."""
+    
+    # Substitui linguagem marketeira por jornalística
+    replacements = [
+        # Remove linguagem especulativa
+        (r'Imagine que', 'Considere que'),
+        (r'E se eu te dissesse', 'Os dados indicam'),
+        (r'Você já se perguntou', 'Analistas questionam'),
+        (r'incrível', 'significativo'),
+        (r'fantástico', 'notável'),
+        (r'revolucionário', 'inovador'),
+        
+        # Melhora conectores
+        (r'Mas isso não é tudo', 'Além disso'),
+        (r'E tem mais', 'Adicionalmente'),
+        (r'Aqui está o ponto', 'O aspecto central é'),
+        
+        # Linguagem mais precisa
+        (r'muitas empresas', 'diversas organizações'),
+        (r'a maioria dos', 'grande parte dos'),
+        (r'praticamente todos', 'a maior parte dos'),
+        
+        # Remove exageros
+        (r'extremamente', 'altamente'),
+        (r'incrivelmente', 'notavelmente'),
+        (r'absolutamente', 'completamente'),
+    ]
+    
+    for pattern, replacement in replacements:
+        content = re.sub(pattern, replacement, content, flags=re.IGNORECASE)
+    
+    # Melhora estrutura de frases
+    # Evita frases muito longas
+    sentences = re.split(r'(?<=[.!?])\s+', content)
+    improved_sentences = []
+    
+    for sentence in sentences:
+        words = sentence.split()
+        # Se a frase tem mais de 25 palavras, sugere quebra
+        if len(words) > 25 and ',' in sentence:
+            # Tenta quebrar na primeira vírgula após a 15ª palavra
+            comma_positions = [i for i, word in enumerate(words) if ',' in word]
+            if comma_positions and comma_positions[0] > 10:
+                break_point = comma_positions[0] + 1
+                first_part = ' '.join(words[:break_point]).rstrip(',') + '.'
+                second_part = ' '.join(words[break_point:])
+                improved_sentences.extend([first_part, second_part])
+            else:
+                improved_sentences.append(sentence)
+        else:
+            improved_sentences.append(sentence)
+    
+    return ' '.join(improved_sentences)
 
 
 def improve_headings_structure(content: str) -> str:
@@ -1460,6 +1520,61 @@ def commit_new_post(file_path: Path, title: str):
     except FileNotFoundError:
         print("❌ ERRO: O comando 'git' não foi encontrado. O arquivo foi criado mas não commitado.")
 
+def validate_journalistic_quality(title: str, content: str) -> bool:
+    """Valida se o conteúdo atende aos padrões de qualidade jornalística."""
+    
+    issues = []
+    
+    # Verifica se tem lead jornalístico (primeiros 2 parágrafos)
+    paragraphs = [p.strip() for p in content.split('\n\n') if p.strip() and not p.startswith('#')]
+    if len(paragraphs) >= 2:
+        first_two = ' '.join(paragraphs[:2]).lower()
+        # Verifica se responde aos 5 W's básicos (mais flexível)
+        has_what = any(word in first_two for word in ['anunciou', 'lançou', 'revelou', 'apresentou', 'desenvolveu', 'criou', 'introduziu', 'implementou', 'oferece', 'disponibiliza'])
+        has_who = any(word in first_two for word in ['empresa', 'companhia', 'organização', 'equipe', 'google', 'microsoft', 'amazon', 'meta', 'nvidia', 'apple', 'tecnologia', 'plataforma'])
+        
+        # Relaxa critério - só precisa de O QUE e QUEM
+        if not (has_what or has_who):
+            issues.append("Lead precisa ser mais informativo sobre o que aconteceu e quem está envolvido")
+    
+    # Verifica densidade de dados específicos
+    data_indicators = len(re.findall(r'\d+[%\w]*', content))  # números, percentuais
+    word_count = len(content.split())
+    data_density = data_indicators / word_count if word_count > 0 else 0
+    
+    if data_density < 0.01:  # Menos de 1% de dados específicos
+        issues.append("Baixa densidade de dados específicos (números, percentuais)")
+    
+    # Verifica se tem parágrafos muito longos (mais flexível)
+    long_paragraphs = [p for p in paragraphs if len(p.split()) > 150]
+    if len(long_paragraphs) > 3:
+        issues.append("Parágrafos excessivamente longos (>150 palavras)")
+    
+    # Verifica redundâncias comuns
+    redundant_phrases = [
+        'é importante notar que', 'vale destacar que', 'cabe ressaltar que',
+        'como mencionado anteriormente', 'conforme já dito'
+    ]
+    redundancy_count = sum(content.lower().count(phrase) for phrase in redundant_phrases)
+    if redundancy_count > 3:
+        issues.append("Muitas frases redundantes ou clichês")
+    
+    # Verifica se tem conectores lógicos (mais abrangente)
+    logical_connectors = ['portanto', 'consequentemente', 'assim', 'dessa forma', 'logo', 'além disso', 'por outro lado', 'entretanto', 'contudo', 'no entanto', 'adicionalmente', 'por sua vez', 'desta forma']
+    connector_count = sum(1 for connector in logical_connectors if connector in content.lower())
+    if connector_count < 2:
+        issues.append("Poucos conectores lógicos para melhor fluxo textual")
+    
+    if issues:
+        print(f"❌ Problemas de qualidade jornalística encontrados:")
+        for issue in issues:
+            print(f"   • {issue}")
+        return False
+    
+    print("✅ Conteúdo aprovado na validação de qualidade jornalística")
+    return True
+
+
 def validate_ethical_guidelines(title: str, content: str) -> bool:
     """Valida se o conteúdo segue as diretrizes éticas."""
     
@@ -1556,6 +1671,11 @@ def validate_seo_quality(title: str, content: str) -> bool:
 
 def validate_post_quality(title: str, content: str) -> bool:
     """Valida a qualidade básica, ética e SEO do post gerado."""
+    
+    # Validação de qualidade jornalística
+    if not validate_journalistic_quality(title, content):
+        print("❌ Post não atende aos padrões de qualidade jornalística, regenerando...")
+        return False
     
     # Validação ética
     if not validate_ethical_guidelines(title, content):
