@@ -282,24 +282,17 @@ def generate_news_technical_analysis() -> str:
             for template in analysis_templates:
                 original_template = template
                 
-                # Ajusta tamanho se necessário
+                # Verifica tamanho mas não trunca automaticamente
                 if len(template) > SEO_TITLE_MAX_LENGTH:
-                    # Trunca de forma mais inteligente
-                    if " - " in template:
-                        parts = template.split(" - ")
-                        if len(parts[0]) <= SEO_TITLE_MAX_LENGTH - 10:
-                            template = parts[0] + " - " + parts[1][:SEO_TITLE_MAX_LENGTH - len(parts[0]) - 3] + "..."
-                        else:
-                            template = template[:SEO_TITLE_MAX_LENGTH-3] + "..."
-                    else:
-                        template = template[:SEO_TITLE_MAX_LENGTH-3] + "..."
+                    # Pula este template se muito longo
+                    continue
                 
                 # Verifica se é válido (mais flexível com tamanho mínimo)
                 min_length = max(30, SEO_TITLE_MIN_LENGTH - 20)  # Mais flexível
                 
                 if len(template) >= min_length and not is_topic_duplicate(template, used_topics):
                     print(f"✅ Análise técnica baseada em notícia: {template}")
-                    print(f"📰 Notícia fonte: {news_source} - {clean_title[:50]}...")
+                    print(f"📰 Notícia fonte: {news_source} - {clean_title}")
                     
                     # Atualiza cache com informações da notícia
                     used_topics.append(template)
@@ -317,18 +310,18 @@ def generate_news_technical_analysis() -> str:
                     return template
             
             # Se nenhum template funcionou, tenta versões mais curtas
+            # Se chegou aqui, usa título mais direto sem truncar
             short_templates = [
-                f"Análise: {clean_title[:30]}... - impactos técnicos",
-                f"Deep dive: {clean_title[:35]}... - arquitetura",
-                f"Tech review: {clean_title[:40]}...",
-                f"Breakdown técnico: {clean_title[:30]}...",
-                f"Análise técnica de {clean_title[:35]}..."
+                f"Análise técnica: {clean_title}",
+                f"Deep dive: {clean_title}",
+                f"Tech breakdown: {clean_title}",
+                f"Análise: {clean_title}"
             ]
             
             for template in short_templates:
                 if len(template) >= min_length and not is_topic_duplicate(template, used_topics):
                     print(f"✅ Análise técnica (versão curta): {template}")
-                    print(f"📰 Notícia fonte: {news_source} - {clean_title[:50]}...")
+                    print(f"📰 Notícia fonte: {news_source} - {clean_title}")
                     
                     # Atualiza cache
                     used_topics.append(template)
@@ -351,7 +344,7 @@ def generate_news_technical_analysis() -> str:
         # Tenta uma abordagem mais simples
         if news_articles:
             simple_news = random.choice(news_articles)
-            simple_title = f"Análise: {simple_news['title'][:40]}..."
+            simple_title = f"Análise técnica: {simple_news['title']}"
             if not is_topic_duplicate(simple_title, used_topics):
                 print(f"✅ Análise simples: {simple_title}")
                 return simple_title
@@ -409,7 +402,7 @@ def generate_it_professional_topic() -> str:
             for template in it_templates:
                 if len(template) <= SEO_TITLE_MAX_LENGTH and not is_topic_duplicate(template, used_topics):
                     print(f"✅ Título técnico: {template}")
-                    print(f"📰 Base: {selected_news['source']} - {news_title[:50]}...")
+                    print(f"📰 Base: {selected_news['source']} - {news_title}")
                     
                     # Atualiza cache
                     used_topics.append(template)
@@ -519,14 +512,13 @@ def generate_news_based_topic() -> str:
         
         # Testa títulos até encontrar um válido
         for template in news_templates:
-            # Ajusta tamanho se necessário
+            # Pula templates muito longos
             if len(template) > SEO_TITLE_MAX_LENGTH:
-                # Trunca mantendo sentido
-                template = template[:SEO_TITLE_MAX_LENGTH-3] + "..."
+                continue
             
             if len(template) >= SEO_TITLE_MIN_LENGTH and not is_topic_duplicate(template, used_topics):
                 print(f"✅ Título baseado em notícia: {template}")
-                print(f"📰 Notícia fonte: {selected_news['source']} - {news_title[:50]}...")
+                print(f"📰 Notícia fonte: {selected_news['source']} - {news_title}")
                 
                 # Atualiza cache
                 used_topics.append(template)
@@ -877,7 +869,7 @@ def write_article(title: str) -> str:
         
         if cached_news and cached_news.get("title"):
             news_context = cached_news
-            print(f"📰 Usando notícia do cache: {cached_news['title'][:50]}...")
+            print(f"📰 Usando notícia do cache: {cached_news['title']}")
 
         else:
             # Fallback: busca notícia relevante
@@ -895,7 +887,7 @@ def write_article(title: str) -> str:
     
     if news_context:
         print(f'✍️ Escrevendo artigo baseado em notícia real: "{title}"...')
-        print(f'📰 Contexto: {news_context["source"]} - {news_context["title"][:50]}...')
+        print(f'📰 Contexto: {news_context["source"]} - {news_context["title"]}')
     elif is_news_based:
         print(f'✍️ Escrevendo artigo híbrido (educativo + contexto): "{title}"...')
     else:
@@ -1260,7 +1252,7 @@ def create_hugo_post(title: str, content: str) -> Optional[Path]:
         # Limpa o título para usar no nome do arquivo
         slug = re.sub(r'[^\w\s-]', '', title.lower()).strip()
         slug = re.sub(r'[\s_]+', '-', slug)
-        filename = POSTS_DIR / f"{now.strftime('%Y-%m-%d')}-{slug[:50]}.md"
+        filename = POSTS_DIR / f"{now.strftime('%Y-%m-%d')}-{slug[:80]}.md"
 
         # Escapa caracteres especiais
         escaped_title = title.replace('"', '\\"')
@@ -1818,7 +1810,7 @@ def main():
         sys.exit(1)
     
     current_step += 1
-    show_progress(current_step, total_steps, f"Tópico: {topic[:50]}...")
+    show_progress(current_step, total_steps, f"Tópico: {topic}")
 
     current_step += 1
     show_progress(current_step, total_steps, "Gerando artigo...")
