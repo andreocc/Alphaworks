@@ -1,19 +1,16 @@
 User-agent: *
 Allow: /
 Disallow: /admin/
-Disallow: /wp-admin/
 Disallow: /search/
 Disallow: /?s=
-Disallow: /comments/feed/
-Disallow: /feed/
-Disallow: /page/
 Crawl-delay: 1
 
-# Para Google News específicamente
+# Google News
 User-agent: Googlebot-News
 Allow: /
-Crawl-delay: 1
+Crawl-delay: 0.5
 
 # Sitemaps
-Sitemap: https://alphaworks-53k.pages.dev/sitemap.xml
-Sitemap: https://alphaworks-53k.pages.dev/sitemap-news.xml
+Sitemap: https://www.alphaworks.com.br/sitemap.xml
+Sitemap: https://www.alphaworks.com.br/sitemap-news.xml
+Sitemap: https://www.alphaworks.com.br/sitemap-posts.xml
