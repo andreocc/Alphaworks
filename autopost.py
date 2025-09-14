@@ -25,10 +25,14 @@ TOPICS_CACHE = CACHE_DIR / "topics_cache.json"
 def setup_api():
     """Carrega variáveis de ambiente e configura a API do Gemini."""
     load_dotenv()
-    api_key = os.getenv("GOOGLE_API_KEY")
+    # Tenta múltiplas variáveis de ambiente para compatibilidade
+    api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY") or os.getenv("GOOGLE_GENERATIVE_AI_API_KEY")
     if not api_key:
-        print("❌ ERRO: A variável de ambiente GOOGLE_API_KEY não foi encontrada.")
-        print("Certifique-se de que o arquivo .env está na raiz do projeto e contém sua chave.")
+        print("❌ ERRO: Nenhuma chave de API encontrada.")
+        print("Configure uma das seguintes variáveis no arquivo .env:")
+        print("  - GEMINI_API_KEY=sua_chave_aqui")
+        print("  - GOOGLE_API_KEY=sua_chave_aqui")
+        print("  - GOOGLE_GENERATIVE_AI_API_KEY=sua_chave_aqui")
         return False
     try:
         genai.configure(api_key=api_key)
@@ -39,74 +43,125 @@ def setup_api():
 
 def call_gemini_api(prompt: str, safety_settings=None, max_retries=MAX_API_RETRIES, timeout=None) -> str:
     """
-    Chama a API do Gemini com timeout e retry inteligente.
+    Chama a API do Gemini com fallback automático para modelos mais simples.
     Retorna a resposta em texto ou lança uma exceção em caso de erro.
     """
     import time
     
-    # Usa modelo mais rápido para evitar timeout
-    model = genai.GenerativeModel('models/gemini-1.5-flash-latest')
+    # Lista de modelos em ordem de preferência (melhor para pior)
+    model_fallback = [
+        {
+            'name': 'models/gemini-1.5-flash-latest',
+            'description': 'Modelo principal (mais completo)',
+            'max_tokens': 1500,
+            'temperature': 0.7
+        },
+        {
+            'name': 'models/gemini-1.5-flash',
+            'description': 'Modelo estável (fallback 1)',
+            'max_tokens': 1200,
+            'temperature': 0.6
+        },
+        {
+            'name': 'models/gemini-1.5-flash-8b',
+            'description': 'Modelo básico (fallback 2)',
+            'max_tokens': 1000,
+            'temperature': 0.5
+        }
+    ]
     
     if timeout is None:
         timeout = API_TIMEOUT_SECONDS
     
-    for attempt in range(max_retries):
-        try:
-            print(f"🔄 API call {attempt + 1}/{max_retries}")
-            
-            # Configura timeout baseado no tamanho do prompt
-            prompt_size = len(prompt)
-            if prompt_size > 5000:
-                current_timeout = timeout * 2
-                print(f"📏 Prompt longo ({prompt_size} chars) - Timeout: {current_timeout}s")
-            else:
-                current_timeout = timeout
-                print(f"📏 Prompt: {prompt_size} chars - Timeout: {current_timeout}s")
-            
-            start_time = time.time()
-            
-            # Configuração otimizada para velocidade
-            generation_config = genai.types.GenerationConfig(
-                max_output_tokens=1500,  # Reduzido para evitar timeout
-                temperature=0.7,
-                top_p=0.9,
-                top_k=40
-            )
-            
-            response = model.generate_content(
-                prompt, 
-                safety_settings=safety_settings,
-                generation_config=generation_config
-            )
-            
-            elapsed_time = time.time() - start_time
-            print(f"✅ API respondeu em {elapsed_time:.1f}s")
-            
-            if response.text:
-                return response.text
-            else:
-                print(f"⚠️ Tentativa {attempt + 1}: Resposta vazia")
+    # Tenta cada modelo na ordem de fallback
+    for model_idx, model_config in enumerate(model_fallback):
+        model = genai.GenerativeModel(model_config['name'])
+        
+        if model_idx > 0:
+            print(f"🔄 Tentando fallback: {model_config['description']}")
+        
+        for attempt in range(max_retries):
+            try:
+                if model_idx == 0:
+                    print(f"🔄 API call {attempt + 1}/{max_retries}")
+                else:
+                    print(f"🔄 Fallback call {attempt + 1}/{max_retries}")
                 
-        except Exception as e:
-            elapsed_time = time.time() - start_time if 'start_time' in locals() else 0
-            
-            if "timeout" in str(e).lower() or "504" in str(e) or elapsed_time > current_timeout:
-                print(f"⏰ Timeout detectado ({elapsed_time:.1f}s)")
-                if attempt < max_retries - 1:
-                    print("🔄 Reduzindo prompt para próxima tentativa...")
-                    # Reduz prompt se muito longo
-                    if len(prompt) > 3000:
-                        prompt = prompt[:2500] + "\n\nIMPORTANTE: Responda de forma concisa e direta."
-            else:
-                print(f"❌ Erro: {str(e)[:100]}...")
-            
-            if attempt == max_retries - 1:
-                raise e
-            
-            # Espera progressiva
-            wait_time = (attempt + 1) * 2
-            print(f"⏳ Aguardando {wait_time}s...")
-            time.sleep(wait_time)
+                # Configura timeout baseado no tamanho do prompt
+                prompt_size = len(prompt)
+                if prompt_size > 5000:
+                    current_timeout = timeout * 2
+                    print(f"📏 Prompt longo ({prompt_size} chars) - Timeout: {current_timeout}s")
+                else:
+                    current_timeout = timeout
+                    print(f"📏 Prompt: {prompt_size} chars - Timeout: {current_timeout}s")
+                
+                start_time = time.time()
+                
+                # Configuração otimizada baseada no modelo
+                generation_config = genai.types.GenerationConfig(
+                    max_output_tokens=model_config['max_tokens'],
+                    temperature=model_config['temperature'],
+                    top_p=0.9,
+                    top_k=40
+                )
+                
+                response = model.generate_content(
+                    prompt, 
+                    safety_settings=safety_settings,
+                    generation_config=generation_config
+                )
+                
+                elapsed_time = time.time() - start_time
+                print(f"✅ API respondeu em {elapsed_time:.1f}s")
+                
+                if response.text:
+                    if model_idx > 0:
+                        print(f"✅ Sucesso com fallback: {model_config['description']}")
+                    return response.text
+                else:
+                    print(f"⚠️ Tentativa {attempt + 1}: Resposta vazia")
+                
+            except Exception as e:
+                elapsed_time = time.time() - start_time if 'start_time' in locals() else 0
+                error_str = str(e).lower()
+                
+                # Detecta erro de quota - força fallback para próximo modelo
+                if "quota" in error_str or "429" in error_str or "exceeded" in error_str:
+                    print(f"� Quotia excedida no modelo {model_config['description']}")
+                    if model_idx < len(model_fallback) - 1:
+                        print(f"🔄 Tentando próximo modelo...")
+                        break  # Sai do loop de tentativas e vai para próximo modelo
+                    else:
+                        print(f"❌ Todos os modelos esgotaram quota")
+                        raise e
+                
+                # Detecta timeout
+                elif "timeout" in error_str or "504" in error_str or elapsed_time > current_timeout:
+                    print(f"⏰ Timeout detectado ({elapsed_time:.1f}s)")
+                    if attempt < max_retries - 1:
+                        print("🔄 Reduzindo prompt para próxima tentativa...")
+                        # Reduz prompt se muito longo
+                        if len(prompt) > 3000:
+                            prompt = prompt[:2500] + "\n\nIMPORTANTE: Responda de forma concisa e direta."
+                
+                # Outros erros
+                else:
+                    print(f"❌ Erro: {str(e)[:100]}...")
+                
+                # Se é a última tentativa deste modelo, tenta próximo modelo
+                if attempt == max_retries - 1:
+                    if model_idx < len(model_fallback) - 1:
+                        print(f"🔄 Modelo {model_config['description']} falhou, tentando próximo...")
+                        break  # Vai para próximo modelo
+                    else:
+                        raise e
+                
+                # Espera progressiva apenas se não for erro de quota
+                if "quota" not in error_str and "429" not in error_str:
+                    wait_time = (attempt + 1) * 2
+                    print(f"⏳ Aguardando {wait_time}s...")
+                    time.sleep(wait_time)
     
     raise Exception("Falha em todas as tentativas de chamada da API")
 
