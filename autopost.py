@@ -278,6 +278,9 @@ def generate_news_technical_analysis() -> str:
                 f"Case study técnico: análise completa de {clean_title}"
             ]
             
+            # Define tamanho mínimo flexível
+            min_length = max(30, SEO_TITLE_MIN_LENGTH - 20)  # Mais flexível
+            
             # Testa títulos até encontrar um válido
             for template in analysis_templates:
                 original_template = template
@@ -286,9 +289,6 @@ def generate_news_technical_analysis() -> str:
                 if len(template) > SEO_TITLE_MAX_LENGTH:
                     # Pula este template se muito longo
                     continue
-                
-                # Verifica se é válido (mais flexível com tamanho mínimo)
-                min_length = max(30, SEO_TITLE_MIN_LENGTH - 20)  # Mais flexível
                 
                 if len(template) >= min_length and not is_topic_duplicate(template, used_topics):
                     print(f"✅ Análise técnica baseada em notícia: {template}")
