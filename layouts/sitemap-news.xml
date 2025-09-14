@@ -1,13 +1,13 @@
 {{ printf "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\" ?>" | safeHTML }}
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" 
         xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
-  {{ range where .Site.Pages "Section" "noticias" }}
-    {{ if and (ne .Params.noindex true) (ne .Draft true) }}
+  {{ range where .Site.RegularPages "Section" "noticias" }}
+    {{ if and (ne .Params.draft true) (gt .Date (now.AddDate 0 0 -2)) }}
     <url>
       <loc>{{ .Permalink }}</loc>
       <news:news>
         <news:publication>
-          <news:name>Alphaworks</news:name>
+          <news:name>{{ .Site.Title }}</news:name>
           <news:language>pt</news:language>
         </news:publication>
         <news:publication_date>{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}</news:publication_date>
