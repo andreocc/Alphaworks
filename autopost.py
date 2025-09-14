@@ -12,8 +12,9 @@ from dotenv import load_dotenv
 import google.generativeai as genai
 from config import *
 from trends import *
-from news_api import get_current_news, get_news_context
+from news_api_improved import get_current_news, get_news_context
 from content_formatting import format_content
+from content_cleaner import clean_content_completely, create_simple_structure
 
 # --- Configurações ---
 POSTS_DIR = Path("content/posts")
@@ -1082,11 +1083,10 @@ def write_article(title: str) -> str:
         article = call_gemini_api(prompt, safety_settings=safety_settings)
         
         if article:
-            # Aplica melhorias jornalísticas e formatação
-            article = add_storytelling_elements(article)
+            # Aplica limpeza completa e formatação
+            article = clean_content_completely(article)
+            article = create_simple_structure(article, title)
             article = improve_journalistic_language(article)
-            article = improve_headings_structure(article)
-            article = add_visual_elements(article)
             article = format_content(article)
             
             # Adiciona seção de referências formatada
