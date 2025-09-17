@@ -1261,20 +1261,87 @@ def generate_seo_description(title: str, content: str) -> str:
     return description
 
 def extract_seo_keywords(title: str, content: str) -> List[str]:
-    """Extrai palavras-chave SEO do título e conteúdo."""
+    """Extrai palavras-chave SEO do título e conteúdo com validação de consistência."""
     keywords = []
     title_lower = title.lower()
     content_lower = content.lower()
+    combined_text = f"{title_lower} {content_lower}"
     
-    # Identifica palavras-chave principais
+    # Mapeamento de contexto para validação
+    context_validation = {
+        "aws": ["amazon", "graviton", "ec2", "s3", "lambda", "cloud"],
+        "google": ["android", "pixel", "chrome", "youtube", "search", "gemini"],
+        "apple": ["iphone", "ipad", "mac", "ios", "safari", "app store"],
+        "microsoft": ["windows", "azure", "office", "teams", "xbox", "surface"],
+        "meta": ["facebook", "instagram", "whatsapp", "oculus", "threads"],
+        "openai": ["chatgpt", "gpt", "dall-e", "whisper", "codex"],
+        "anthropic": ["claude", "constitutional ai", "safety"],
+        "nvidia": ["gpu", "cuda", "geforce", "rtx", "tensor", "ai"],
+        "tesla": ["model", "autopilot", "supercharger", "cybertruck", "fsd"],
+        "spacex": ["falcon", "dragon", "starship", "starlink", "mars"]
+    }
+    
+    # Identifica palavras-chave principais com validação de contexto
     for category, keyword_list in SEO_KEYWORDS.items():
         for keyword in keyword_list:
-            if keyword in title_lower or keyword in content_lower:
-                keywords.append(keyword)
+            if keyword in combined_text:
+                # Validação de contexto para evitar inconsistências
+                is_valid = True
+                
+                # Se a keyword é uma empresa, valida se o contexto faz sentido
+                if keyword in context_validation:
+                    context_words = context_validation[keyword]
+                    has_context = any(word in combined_text for word in context_words)
+                    
+                    if not has_context:
+                        print(f"⚠️ Keyword '{keyword}' removida - sem contexto válido")
+                        is_valid = False
+                
+                # Validação adicional: evita keywords conflitantes
+                conflicting_keywords = {
+                    "google": ["aws", "amazon", "microsoft azure"],
+                    "aws": ["google cloud", "azure", "microsoft"],
+                    "apple": ["android", "google pixel", "samsung"],
+                    "android": ["ios", "iphone", "apple"],
+                    "ios": ["android", "google", "samsung"]
+                }
+                
+                if keyword in conflicting_keywords:
+                    conflicts = conflicting_keywords[keyword]
+                    has_conflict = any(conflict in combined_text for conflict in conflicts)
+                    
+                    # Se há conflito, verifica qual é mais relevante
+                    if has_conflict:
+                        keyword_count = combined_text.count(keyword)
+                        conflict_counts = [combined_text.count(conflict) for conflict in conflicts]
+                        max_conflict_count = max(conflict_counts) if conflict_counts else 0
+                        
+                        if keyword_count < max_conflict_count:
+                            print(f"⚠️ Keyword '{keyword}' removida - conflito com termo mais relevante")
+                            is_valid = False
+                
+                if is_valid:
+                    keywords.append(keyword)
     
     # Remove duplicatas e limita
     keywords = list(dict.fromkeys(keywords))[:SEO_KEYWORDS_PER_POST]
     
+    # Se não encontrou keywords válidas, extrai do conteúdo principal
+    if not keywords:
+        # Extrai palavras mais frequentes do título e conteúdo
+        import re
+        words = re.findall(r'\b\w{4,}\b', combined_text)
+        word_freq = {}
+        
+        for word in words:
+            if word not in ['para', 'como', 'mais', 'sobre', 'pela', 'pelo', 'esta', 'este', 'essa', 'esse']:
+                word_freq[word] = word_freq.get(word, 0) + 1
+        
+        # Pega as 3 palavras mais frequentes
+        top_words = sorted(word_freq.items(), key=lambda x: x[1], reverse=True)[:3]
+        keywords = [word for word, count in top_words if count > 1]
+    
+    print(f"✅ Keywords SEO validadas: {', '.join(keywords)}")
     return keywords
 
 def generate_tags(title: str, content: str) -> List[str]:
@@ -1382,15 +1449,43 @@ def generate_tags(title: str, content: str) -> List[str]:
         "nanotecnologia": ["nanotecnologia", "materiais-avancados", "ciencia"]
     }
     
-    # Detecta tags baseadas no conteúdo
+    # Detecta tags baseadas no conteúdo com validação de consistência
     detected_tags = set()
     
     # Analisa título e conteúdo
     text_to_analyze = f"{title_lower} {content_lower}"
     
+    # Validação de contexto para empresas
+    company_context = {
+        "aws": ["amazon", "graviton", "ec2", "s3", "lambda", "cloud computing"],
+        "google": ["android", "pixel", "chrome", "search", "gemini", "alphabet"],
+        "apple": ["iphone", "ipad", "mac", "ios", "safari", "app store"],
+        "microsoft": ["windows", "azure", "office", "teams", "xbox"],
+        "meta": ["facebook", "instagram", "whatsapp", "oculus"],
+        "openai": ["chatgpt", "gpt", "dall-e", "whisper"],
+        "anthropic": ["claude", "constitutional ai"],
+        "nvidia": ["gpu", "cuda", "geforce", "rtx", "tensor"],
+        "tesla": ["model", "autopilot", "supercharger", "cybertruck"]
+    }
+    
     for keyword, tags in keyword_to_tags.items():
         if keyword in text_to_analyze:
-            detected_tags.update(tags[:2])  # Máximo 2 tags por palavra-chave
+            # Validação de contexto para evitar tags inconsistentes
+            is_valid = True
+            
+            # Para empresas, verifica se há contexto adequado
+            for tag in tags:
+                if tag in company_context:
+                    context_words = company_context[tag]
+                    has_context = any(word in text_to_analyze for word in context_words)
+                    
+                    if not has_context:
+                        print(f"⚠️ Tag '{tag}' removida - sem contexto válido para {keyword}")
+                        is_valid = False
+                        break
+            
+            if is_valid:
+                detected_tags.update(tags[:2])  # Máximo 2 tags por palavra-chave
     
     # Se não detectou tags específicas, usa análise por IA mais direcionada
     if len(detected_tags) < 2:
@@ -1958,6 +2053,96 @@ def validate_seo_quality(title: str, content: str) -> bool:
     print(f"✅ Post aprovado na validação SEO ({word_count} palavras, {headers} subtítulos)")
     return True
 
+def validate_content_consistency(title: str, content: str, tags: List[str], keywords: List[str]) -> bool:
+    """Valida a consistência entre título, conteúdo, tags e keywords."""
+    print("🔍 Validando consistência do conteúdo...")
+    
+    title_lower = title.lower()
+    content_lower = content.lower()
+    combined_text = f"{title_lower} {content_lower}"
+    
+    # Validações de consistência críticas
+    inconsistencies = []
+    
+    # 1. Verifica se tags fazem sentido com o conteúdo
+    for tag in tags:
+        tag_clean = tag.replace('-', ' ')
+        
+        # Tags de empresas devem ter contexto
+        company_tags = {
+            'aws': ['amazon', 'graviton', 'ec2', 's3', 'lambda'],
+            'google': ['android', 'pixel', 'chrome', 'search', 'gemini'],
+            'apple': ['iphone', 'ipad', 'mac', 'ios', 'safari'],
+            'microsoft': ['windows', 'azure', 'office', 'teams'],
+            'meta': ['facebook', 'instagram', 'whatsapp', 'oculus'],
+            'openai': ['chatgpt', 'gpt', 'dall-e'],
+            'anthropic': ['claude'],
+            'nvidia': ['gpu', 'cuda', 'geforce', 'rtx'],
+            'tesla': ['model', 'autopilot', 'cybertruck']
+        }
+        
+        if tag in company_tags:
+            context_words = company_tags[tag]
+            has_context = any(word in combined_text for word in context_words)
+            
+            if not has_context:
+                inconsistencies.append(f"Tag '{tag}' sem contexto válido no conteúdo")
+    
+    # 2. Verifica conflitos entre tags
+    conflicting_tags = [
+        (['aws', 'amazon'], ['google', 'microsoft', 'azure']),
+        (['google'], ['apple', 'ios', 'iphone']),
+        (['apple', 'ios'], ['android', 'google']),
+        (['openai'], ['anthropic', 'claude']),
+        (['aws'], ['azure', 'google-cloud'])
+    ]
+    
+    for primary_tags, conflicting in conflicting_tags:
+        has_primary = any(tag in tags for tag in primary_tags)
+        has_conflict = any(tag in tags for tag in conflicting)
+        
+        if has_primary and has_conflict:
+            inconsistencies.append(f"Tags conflitantes: {primary_tags} vs {conflicting}")
+    
+    # 3. Verifica se keywords fazem sentido
+    for keyword in keywords:
+        if keyword not in combined_text:
+            inconsistencies.append(f"Keyword '{keyword}' não encontrada no conteúdo")
+    
+    # 4. Verifica se o título é consistente com o conteúdo
+    title_companies = []
+    content_companies = []
+    
+    companies = ['aws', 'amazon', 'google', 'apple', 'microsoft', 'meta', 'openai', 'anthropic', 'nvidia', 'tesla']
+    
+    for company in companies:
+        if company in title_lower:
+            title_companies.append(company)
+        if company in content_lower:
+            content_companies.append(company)
+    
+    # Se o título menciona uma empresa, o conteúdo deve focar nela
+    if title_companies:
+        main_company = title_companies[0]
+        company_mentions = combined_text.count(main_company)
+        
+        # Verifica se outras empresas têm mais menções
+        for other_company in companies:
+            if other_company != main_company:
+                other_mentions = combined_text.count(other_company)
+                if other_mentions > company_mentions:
+                    inconsistencies.append(f"Título foca em '{main_company}' mas conteúdo foca mais em '{other_company}'")
+    
+    # Reporta inconsistências
+    if inconsistencies:
+        print("❌ Inconsistências encontradas:")
+        for inconsistency in inconsistencies:
+            print(f"   • {inconsistency}")
+        return False
+    
+    print("✅ Conteúdo consistente")
+    return True
+
 def validate_executive_quality(title: str, content: str) -> bool:
     """Valida se o conteúdo atende aos padrões de qualidade para executivos C-level."""
     print("👔 Validando qualidade executiva...")
@@ -2023,7 +2208,16 @@ def validate_executive_quality(title: str, content: str) -> bool:
     return True
 
 def validate_post_quality(title: str, content: str) -> bool:
-    """Valida a qualidade básica, ética, SEO e executiva do post gerado."""
+    """Valida a qualidade básica, ética, SEO, executiva e consistência do post gerado."""
+    
+    # Gera tags e keywords para validação de consistência
+    tags = generate_tags(title, content)
+    keywords = extract_seo_keywords(title, content)
+    
+    # Validação de consistência (CRÍTICA - deve ser primeira)
+    if not validate_content_consistency(title, content, tags, keywords):
+        print("❌ Post tem inconsistências críticas, regenerando...")
+        return False
     
     # Validação de qualidade jornalística
     if not validate_journalistic_quality(title, content):
@@ -2040,12 +2234,12 @@ def validate_post_quality(title: str, content: str) -> bool:
         print("❌ Post não atende aos critérios SEO, regenerando...")
         return False
     
-    # Validação executiva (nova)
+    # Validação executiva
     if not validate_executive_quality(title, content):
         print("❌ Post não atende aos padrões executivos, regenerando...")
         return False
     
-    print("✅ Post aprovado em todas as validações (jornalística + ética + SEO + executiva)")
+    print("✅ Post aprovado em todas as validações (consistência + jornalística + ética + SEO + executiva)")
     return True
 
 def load_ethical_guidelines() -> bool:
