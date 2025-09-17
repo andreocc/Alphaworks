@@ -921,83 +921,77 @@ def write_article(title: str) -> str:
         news_description = news_context.get("description", "")
         
         prompt = (
-            f"ANÁLISE TÉCNICA DE NOTÍCIA REAL - {current_date}\n\n"
-            f"Você é um tech lead sênior fazendo uma análise técnica profunda da notícia: '{news_title}'\n"
-            f"Seu artigo tem o título: '{title}'\n\n"
-            f"NOTÍCIA ORIGINAL:\n"
+            f"ANÁLISE EXECUTIVA PARA C-LEVEL - {current_date}\n\n"
+            f"CONTEXTO: Você é um consultor sênior de McKinsey/BCG escrevendo para CEOs, CTOs e executivos C-level sobre: '{news_title}'\n"
+            f"ARTIGO: '{title}'\n\n"
+            f"NOTÍCIA DE REFERÊNCIA:\n"
             f"- Título: {news_title}\n"
             f"- Fonte: {news_source}\n"
             f"- Contexto: {news_description}\n\n"
-            f"FONTES TÉCNICAS ADICIONAIS: {references_text}\n\n"
-            f"OBJETIVO: Fazer um 'refactoring' técnico da notícia, explicando:\n"
-            f"- O que realmente aconteceu tecnicamente\n"
-            f"- Por que isso importa para profissionais de TI\n"
-            f"- Quais são as implicações práticas\n"
-            f"- Como isso afeta infraestrutura e operações\n\n"
-            f"ESTRUTURA JORNALÍSTICA PROFISSIONAL:\n"
-            f"1. ## Lead Jornalístico\n"
-            f"   - Parágrafo de abertura com os 5 W's (O que, Quem, Quando, Onde, Por que)\n"
-            f"   - Impacto imediato e relevância para o leitor\n"
-            f"   - Dados quantitativos quando disponíveis\n\n"
-            f"2. ## Contexto e Background\n"
-            f"   - Histórico da tecnologia/empresa/situação\n"
-            f"   - Desenvolvimentos anteriores relevantes\n"
-            f"   - Posicionamento no mercado atual\n\n"
-            f"3. ## Análise Técnica Aprofundada\n"
-            f"   - Especificações técnicas detalhadas\n"
-            f"   - Comparação com concorrentes/alternativas\n"
-            f"   - Arquitetura e componentes envolvidos\n\n"
-            f"4. ## Impactos e Implicações\n"
-            f"   - Efeitos na indústria e mercado\n"
-            f"   - Mudanças para desenvolvedores e empresas\n"
-            f"   - Considerações de adoção e migração\n\n"
-            f"5. ## Perspectiva de Especialistas\n"
-            f"   - Análise de tendências do setor\n"
-            f"   - Desafios e oportunidades identificados\n"
-            f"   - Previsões baseadas em dados\n\n"
-            f"6. ## Implementação Prática\n"
-            f"   - Guia passo-a-passo para adoção\n"
-            f"   - Custos, recursos e timeline realistas\n"
-            f"   - Métricas de sucesso e KPIs\n\n"
-            f"7. ## Conclusão Editorial\n"
-            f"   - Síntese dos pontos principais\n"
-            f"   - Recomendações baseadas na análise\n"
-            f"   - Próximos desenvolvimentos a acompanhar\n\n"
-            f"PADRÕES DE QUALIDADE JORNALÍSTICA:\n"
-            f"- {SEO_ARTICLE_MIN_WORDS}-{SEO_ARTICLE_MAX_WORDS} palavras com densidade informacional alta\n"
-            f"- LEAD jornalístico: responda O QUE, QUEM, QUANDO, ONDE, POR QUE nos primeiros parágrafos\n"
-            f"- Estrutura de pirâmide invertida: informações mais importantes primeiro\n"
-            f"- Fontes credíveis e citações específicas (não genéricas)\n"
-            f"- Dados concretos, estatísticas e números verificáveis\n"
-            f"- Contexto histórico e comparações relevantes\n"
-            f"- Linguagem precisa, objetiva e sem redundâncias\n"
-            f"- Transições lógicas entre parágrafos\n"
-            f"- Evite clichês e frases feitas\n"
-            f"- Cada parágrafo deve ter uma ideia central clara\n"
-            f"- Conclusões baseadas em evidências apresentadas\n\n"
-            f"ELEMENTOS OBRIGATÓRIOS:\n"
-            f"✅ Lead jornalístico com os 5 W's nos primeiros parágrafos\n"
-            f"✅ Dados específicos: números, percentuais, versões, datas\n"
-            f"✅ Citações de fontes credíveis e especialistas\n"
-            f"✅ Análise técnica que vai além da notícia superficial\n"
-            f"✅ Comparações com concorrentes e alternativas\n"
-            f"✅ Contexto histórico e posicionamento no mercado\n"
-            f"✅ Impactos práticos para desenvolvedores e empresas\n"
-            f"✅ Conclusões baseadas em evidências apresentadas\n\n"
-            f"QUALIDADE EDITORIAL OBRIGATÓRIA:\n"
-            f"🎯 Cada parágrafo = uma ideia central (3-5 frases)\n"
-            f"🎯 Transições lógicas entre parágrafos e seções\n"
-            f"🎯 Linguagem precisa, sem redundâncias ou clichês\n"
-            f"🎯 Verbos no tempo correto (presente/passado)\n"
-            f"🎯 Estrutura de pirâmide invertida (mais importante primeiro)\n\n"
-            f"INSTRUÇÕES CRÍTICAS PARA QUALIDADE JORNALÍSTICA:\n"
-            f"• PRIMEIRO PARÁGRAFO deve responder: O QUE aconteceu, QUEM está envolvido, QUANDO\n"
-            f"• Use conectores lógicos: 'Além disso', 'Por outro lado', 'Consequentemente'\n"
-            f"• Parágrafos de 3-5 frases cada, máximo 100 palavras\n"
-            f"• Dados específicos: números, percentuais, versões, datas\n"
-            f"• Linguagem precisa e objetiva, sem exageros ou clichês\n"
-            f"• Estrutura de pirâmide invertida: mais importante primeiro\n\n"
-            f"Escreva uma ANÁLISE JORNALÍSTICA TÉCNICA que profissionais de TI respeitarão!"
+            f"FONTES EXECUTIVAS: {references_text}\n\n"
+            f"PÚBLICO-ALVO: Executivos C-level que precisam de informações PRECISAS e ACIONÁVEIS para tomada de decisão estratégica.\n\n"
+            f"ESTRUTURA EXECUTIVA OBRIGATÓRIA:\n\n"
+            f"## 📊 Executive Summary\n"
+            f"- Impacto nos negócios em 2-3 frases diretas\n"
+            f"- Números e métricas específicas quando disponíveis\n"
+            f"- Recomendação estratégica imediata\n\n"
+            f"## 🎯 Strategic Context\n"
+            f"- Posicionamento competitivo no mercado\n"
+            f"- Implicações para diferentes setores\n"
+            f"- Janela de oportunidade temporal\n\n"
+            f"## 💼 Business Impact Analysis\n"
+            f"- Impacto direto em receita/custos/operações\n"
+            f"- Riscos e oportunidades quantificados\n"
+            f"- Comparação com concorrentes diretos\n\n"
+            f"## 🔧 Technical Implementation\n"
+            f"- Requisitos técnicos e de infraestrutura\n"
+            f"- Timeline realista de implementação\n"
+            f"- Investimento necessário (CAPEX/OPEX)\n\n"
+            f"## 📈 Market Dynamics\n"
+            f"- Tendências de adoção no mercado\n"
+            f"- Posição dos principais players\n"
+            f"- Previsões baseadas em dados históricos\n\n"
+            f"## ⚡ Action Items\n"
+            f"- Próximos passos imediatos (30/60/90 dias)\n"
+            f"- Recursos necessários e responsabilidades\n"
+            f"- KPIs para monitoramento\n\n"
+            f"PADRÕES DE QUALIDADE EXECUTIVA:\n"
+            f"🎯 PRECISÃO ABSOLUTA: Toda informação deve ser verificável e precisa\n"
+            f"🎯 DENSIDADE INFORMACIONAL: {SEO_ARTICLE_MIN_WORDS}-{SEO_ARTICLE_MAX_WORDS} palavras, zero fluff\n"
+            f"🎯 LINGUAGEM EXECUTIVA: Direta, objetiva, sem jargões desnecessários\n"
+            f"🎯 DADOS CONCRETOS: Números, percentuais, datas, versões específicas\n"
+            f"🎯 ANÁLISE CRÍTICA: Prós, contras, riscos e oportunidades equilibrados\n"
+            f"🎯 CONTEXTO COMPETITIVO: Comparações com alternativas e concorrentes\n"
+            f"🎯 ACIONABILIDADE: Cada seção deve gerar insights para decisão\n\n"
+            f"ELEMENTOS OBRIGATÓRIOS PARA C-LEVEL:\n"
+            f"✅ Executive Summary com impacto quantificado\n"
+            f"✅ Análise de ROI e TCO quando aplicável\n"
+            f"✅ Timeline de implementação realista\n"
+            f"✅ Comparação com soluções concorrentes\n"
+            f"✅ Riscos técnicos e de negócio identificados\n"
+            f"✅ Recomendações estratégicas específicas\n"
+            f"✅ Métricas de sucesso mensuráveis\n\n"
+            f"QUALIDADE EDITORIAL EXECUTIVA:\n"
+            f"📝 Cada parágrafo = um insight acionável\n"
+            f"📝 Transições lógicas que constroem o argumento\n"
+            f"📝 Linguagem precisa, sem redundâncias\n"
+            f"📝 Estrutura de pirâmide: conclusões primeiro, detalhes depois\n"
+            f"📝 Verbos no presente para fatos, futuro para projeções\n\n"
+            f"PROIBIÇÕES ABSOLUTAS:\n"
+            f"❌ Informações imprecisas ou especulativas\n"
+            f"❌ Linguagem promocional ou sensacionalista\n"
+            f"❌ Generalizações sem dados de suporte\n"
+            f"❌ Jargões técnicos sem explicação\n"
+            f"❌ Conclusões sem evidências\n"
+            f"❌ Redundâncias ou informações irrelevantes\n\n"
+            f"INSTRUÇÕES CRÍTICAS:\n"
+            f"• PRIMEIRO PARÁGRAFO: Impacto nos negócios em números concretos\n"
+            f"• DADOS ESPECÍFICOS: Versões, datas, percentuais, valores monetários\n"
+            f"• ANÁLISE COMPETITIVA: Compare com pelo menos 2 alternativas\n"
+            f"• TIMELINE: Marcos específicos de implementação\n"
+            f"• ROI: Quando aplicável, inclua análise de retorno\n"
+            f"• RISCOS: Identifique e quantifique riscos principais\n\n"
+            f"Escreva uma ANÁLISE EXECUTIVA que um CEO usaria para tomar decisões estratégicas!"
         )
     elif news_context:
         # Prompt para conteúdo baseado em notícia real (menos técnico)
@@ -1006,36 +1000,74 @@ def write_article(title: str) -> str:
         news_description = news_context.get("description", "")
         
         prompt = (
-            f"ANÁLISE INFORMATIVA PARA PROFISSIONAIS DE TI - {current_date}\n\n"
-            f"Você é um tech lead experiente escrevendo para profissionais de TI sobre: '{title}'\n\n"
+            f"BRIEFING ESTRATÉGICO PARA LIDERANÇA TÉCNICA - {current_date}\n\n"
+            f"CONTEXTO: Você é um Principal Engineer/Architect escrevendo para CTOs, VPs de Engenharia e Tech Leads sobre: '{title}'\n\n"
             f"NOTÍCIA DE REFERÊNCIA:\n"
             f"- Título: {news_title}\n"
             f"- Fonte: {news_source}\n"
             f"- Contexto: {news_description}\n\n"
-            f"FONTES ADICIONAIS: {references_text}\n\n"
-            f"ESTRUTURA INFORMATIVA:\n"
-            f"1. RESUMO EXECUTIVO: Key takeaways para profissionais ocupados\n"
-            f"2. ## Contexto Técnico (o que mudou e por que importa)\n"
-            f"3. ## Análise de Impacto (como afeta stacks e workflows atuais)\n"
-            f"4. ## Implicações para Equipes (skills, processos, ferramentas)\n"
-            f"5. ## Considerações de Adoção (quando e como implementar)\n"
-            f"6. ## Competitive Landscape (alternativas e comparações)\n"
-            f"7. ## Roadmap e Próximos Passos (planejamento estratégico)\n\n"
-            f"DIRETRIZES PROFISSIONAIS:\n"
-            f"- {SEO_ARTICLE_MIN_WORDS}-{SEO_ARTICLE_MAX_WORDS} palavras\n"
-            f"- Tom profissional, direto ao ponto\n"
-            f"- Foque em implicações práticas para o dia a dia\n"
-            f"- Inclua considerações de budget, timeline, recursos\n"
-            f"- Aborde riscos e benefícios de forma equilibrada\n"
-            f"- Contextualize para realidade de empresas brasileiras\n\n"
-            f"IMPORTANTE:\n"
-            f"✅ Informação acionável para tomada de decisão\n"
-            f"✅ Análise crítica, não apenas hype\n"
-            f"✅ Considerações práticas de implementação\n"
-            f"✅ Impacto em workflows e processos existentes\n"
-            f"❌ NÃO seja apenas descritivo\n"
-            f"❌ NÃO ignore limitações e desafios\n\n"
-            f"Escreva para PROFISSIONAIS que precisam tomar DECISÕES TÉCNICAS!"
+            f"FONTES TÉCNICAS: {references_text}\n\n"
+            f"PÚBLICO: Líderes técnicos que precisam avaliar impacto estratégico e tomar decisões de arquitetura/investimento.\n\n"
+            f"ESTRUTURA DE BRIEFING TÉCNICO:\n\n"
+            f"## 🎯 Technical Summary\n"
+            f"- Mudança técnica principal e seu significado\n"
+            f"- Impacto imediato em arquiteturas existentes\n"
+            f"- Nível de maturidade da tecnologia\n\n"
+            f"## 🏗️ Architecture Impact\n"
+            f"- Como afeta stacks e infraestrutura atuais\n"
+            f"- Compatibilidade com sistemas legados\n"
+            f"- Requisitos de migração e refatoração\n\n"
+            f"## 👥 Team & Skills Impact\n"
+            f"- Novas competências necessárias\n"
+            f"- Impacto em processos de desenvolvimento\n"
+            f"- Curva de aprendizado e treinamento\n\n"
+            f"## 💰 Investment Analysis\n"
+            f"- Custos de implementação (licenças, infraestrutura, pessoas)\n"
+            f"- Timeline realista de adoção\n"
+            f"- ROI esperado e métricas de sucesso\n\n"
+            f"## ⚖️ Risk Assessment\n"
+            f"- Riscos técnicos e de negócio\n"
+            f"- Dependências externas e vendor lock-in\n"
+            f"- Estratégias de mitigação\n\n"
+            f"## 🚀 Implementation Strategy\n"
+            f"- Abordagem de adoção recomendada (pilot, gradual, big bang)\n"
+            f"- Marcos e entregáveis principais\n"
+            f"- Critérios de go/no-go\n\n"
+            f"PADRÕES DE QUALIDADE TÉCNICA:\n"
+            f"🔧 PRECISÃO TÉCNICA: Informações verificáveis e atualizadas\n"
+            f"🔧 DENSIDADE: {SEO_ARTICLE_MIN_WORDS}-{SEO_ARTICLE_MAX_WORDS} palavras com alta densidade informacional\n"
+            f"🔧 LINGUAGEM TÉCNICA: Precisa mas acessível para liderança\n"
+            f"🔧 DADOS CONCRETOS: Benchmarks, versões, especificações\n"
+            f"🔧 ANÁLISE CRÍTICA: Prós, contras e trade-offs claros\n"
+            f"🔧 CONTEXTO COMPETITIVO: Comparação com alternativas\n"
+            f"🔧 ACIONABILIDADE: Insights que geram decisões\n\n"
+            f"ELEMENTOS OBRIGATÓRIOS:\n"
+            f"✅ Análise de impacto em arquitetura existente\n"
+            f"✅ Estimativas de esforço e timeline\n"
+            f"✅ Comparação técnica com alternativas\n"
+            f"✅ Identificação de riscos e dependências\n"
+            f"✅ Recomendações de implementação\n"
+            f"✅ Métricas técnicas de sucesso\n"
+            f"✅ Considerações de escalabilidade\n\n"
+            f"QUALIDADE EDITORIAL:\n"
+            f"📋 Cada seção = decisão ou insight específico\n"
+            f"📋 Argumentação lógica e estruturada\n"
+            f"📋 Linguagem direta, sem ambiguidades\n"
+            f"📋 Dados técnicos específicos e verificáveis\n"
+            f"📋 Conclusões baseadas em evidências\n\n"
+            f"PROIBIÇÕES:\n"
+            f"❌ Especulações sem base técnica\n"
+            f"❌ Hype sem análise crítica\n"
+            f"❌ Generalizações sem contexto\n"
+            f"❌ Informações desatualizadas\n"
+            f"❌ Recomendações sem justificativa\n\n"
+            f"FOCO ESTRATÉGICO:\n"
+            f"• Impacto em decisões de arquitetura\n"
+            f"• Considerações de budget e recursos\n"
+            f"• Timeline de implementação realista\n"
+            f"• Análise de risco vs benefício\n"
+            f"• Estratégia de adoção gradual\n\n"
+            f"Escreva um BRIEFING TÉCNICO que líderes usarão para decisões estratégicas!"
         )
     elif is_news_based:
         # Prompt para conteúdo híbrido (educativo + contexto de tendências)
@@ -1079,44 +1111,76 @@ def write_article(title: str) -> str:
     else:
         # Prompt para conteúdo puramente educativo
         prompt = (
-            f"ARTIGO TÉCNICO EDUCATIVO - {current_date}\n\n"
-            f"Você é um especialista técnico escrevendo um artigo EDUCATIVO sobre: '{title}'\n\n"
-            f"CONTEXTO EDUCATIVO:\n"
+            f"GUIA ESTRATÉGICO PARA EXECUTIVOS DE TECNOLOGIA - {current_date}\n\n"
+            f"CONTEXTO: Você é um consultor sênior da Gartner/Forrester escrevendo um guia executivo sobre: '{title}'\n\n"
+            f"CONTEXTO ESTRATÉGICO:\n"
             f"- Ano de referência: {edu_context['current_year']}\n"
-            f"- Foco do conteúdo: {edu_context['content_focus']}\n"
+            f"- Foco estratégico: {edu_context['content_focus']}\n"
             f"- Abordagem: {edu_context['educational_approach']}\n\n"
-            f"FONTES DE REFERÊNCIA: {references_text}\n\n"
-            f"ESTRUTURA EDUCATIVA:\n"
-            f"1. INTRODUÇÃO: Apresente o tema e sua relevância\n"
-            f"2. ## Conceitos e Definições (fundamentos técnicos)\n"
-            f"3. ## Como Funciona (aspectos técnicos explicados)\n"
-            f"4. ## Aplicações e Casos de Uso (exemplos reais)\n"
-            f"5. ## Vantagens e Desvantagens (análise equilibrada)\n"
-            f"6. ## Considerações para Implementação (aspectos práticos)\n"
-            f"7. ## Conclusão (síntese e recomendações)\n\n"
-            f"DIRETRIZES RIGOROSAS:\n"
-            f"- {SEO_ARTICLE_MIN_WORDS}-{SEO_ARTICLE_MAX_WORDS} palavras (otimizado para SEO)\n"
-            f"- Tom EDUCATIVO e TÉCNICO, nunca sensacionalista\n"
-            f"- Base-se em conhecimento geral estabelecido\n"
-            f"- Explique conceitos complexos de forma clara\n"
-            f"- Use exemplos práticos e aplicáveis\n"
-            f"- Seja honesto sobre limitações e desafios\n"
-            f"- Contextualize para desenvolvedores/profissionais brasileiros\n\n"
+            f"FONTES EXECUTIVAS: {references_text}\n\n"
+            f"PÚBLICO: CTOs, CIOs, VPs de Tecnologia e executivos que precisam entender implicações estratégicas.\n\n"
+            f"ESTRUTURA DE GUIA EXECUTIVO:\n\n"
+            f"## 📋 Executive Overview\n"
+            f"- Definição clara e impacto nos negócios\n"
+            f"- Por que isso importa agora para liderança\n"
+            f"- Principais players e market share\n\n"
+            f"## 🔍 Technology Deep Dive\n"
+            f"- Como funciona (explicação técnica acessível)\n"
+            f"- Diferenciadores técnicos principais\n"
+            f"- Maturidade da tecnologia e roadmap\n\n"
+            f"## 💼 Business Applications\n"
+            f"- Casos de uso por setor/indústria\n"
+            f"- ROI típico e métricas de sucesso\n"
+            f"- Exemplos de implementação bem-sucedida\n\n"
+            f"## ⚖️ Strategic Analysis\n"
+            f"- Vantagens competitivas e limitações\n"
+            f"- Comparação com alternativas disponíveis\n"
+            f"- Riscos e considerações de compliance\n\n"
+            f"## 🚀 Implementation Framework\n"
+            f"- Estratégia de adoção recomendada\n"
+            f"- Investimento necessário e timeline\n"
+            f"- Competências e recursos requeridos\n\n"
+            f"## 📊 Market Intelligence\n"
+            f"- Tendências de adoção no mercado\n"
+            f"- Previsões de crescimento e evolução\n"
+            f"- Posicionamento competitivo futuro\n\n"
+            f"PADRÕES DE QUALIDADE EXECUTIVA:\n"
+            f"🎯 PRECISÃO ESTRATÉGICA: Informações verificáveis e atuais\n"
+            f"🎯 DENSIDADE EXECUTIVA: {SEO_ARTICLE_MIN_WORDS}-{SEO_ARTICLE_MAX_WORDS} palavras, zero redundância\n"
+            f"🎯 LINGUAGEM EXECUTIVA: Clara, direta, sem jargões desnecessários\n"
+            f"🎯 DADOS CONCRETOS: Market share, crescimento, investimentos\n"
+            f"🎯 ANÁLISE ESTRATÉGICA: Oportunidades, ameaças, posicionamento\n"
+            f"🎯 CONTEXTO COMPETITIVO: Benchmarking com alternativas\n"
+            f"🎯 ACIONABILIDADE: Insights que direcionam estratégia\n\n"
+            f"ELEMENTOS OBRIGATÓRIOS:\n"
+            f"✅ Definição clara e impacto nos negócios\n"
+            f"✅ Análise de ROI e business case\n"
+            f"✅ Comparação com soluções concorrentes\n"
+            f"✅ Timeline de implementação realista\n"
+            f"✅ Identificação de riscos estratégicos\n"
+            f"✅ Recomendações baseadas em dados\n"
+            f"✅ Métricas de sucesso mensuráveis\n\n"
+            f"QUALIDADE EDITORIAL EXECUTIVA:\n"
+            f"📈 Cada seção = insight estratégico acionável\n"
+            f"📈 Argumentação lógica com dados de suporte\n"
+            f"📈 Linguagem precisa e objetiva\n"
+            f"📈 Estrutura que facilita tomada de decisão\n"
+            f"📈 Conclusões baseadas em evidências\n\n"
             f"PROIBIÇÕES ABSOLUTAS:\n"
-            f"❌ NÃO invente notícias, lançamentos ou eventos específicos\n"
-            f"❌ NÃO use linguagem de urgência ('breaking', 'exclusivo')\n"
-            f"❌ NÃO crie citações ou declarações falsas\n"
-            f"❌ NÃO afirme fatos específicos não verificáveis\n"
-            f"❌ NÃO use datas específicas recentes ('ontem', 'esta semana')\n"
-            f"❌ NÃO invente números ou estatísticas\n\n"
-            f"FOQUE EM VALOR EDUCATIVO:\n"
-            f"✅ Explique conceitos e funcionamento\n"
-            f"✅ Analise prós e contras de forma equilibrada\n"
-            f"✅ Forneça orientações práticas\n"
-            f"✅ Compare diferentes abordagens/tecnologias\n"
-            f"✅ Eduque sobre melhores práticas\n"
-            f"✅ Contextualize tendências gerais do setor\n\n"
-            f"Escreva um artigo que seja uma REFERÊNCIA TÉCNICA confiável e educativa!"
+            f"❌ Especulações sem base em dados\n"
+            f"❌ Linguagem promocional ou tendenciosa\n"
+            f"❌ Informações técnicas excessivamente detalhadas\n"
+            f"❌ Generalizações sem contexto específico\n"
+            f"❌ Recomendações sem justificativa estratégica\n"
+            f"❌ Dados desatualizados ou imprecisos\n\n"
+            f"FOCO ESTRATÉGICO:\n"
+            f"• Impacto em vantagem competitiva\n"
+            f"• Considerações de investimento e ROI\n"
+            f"• Riscos estratégicos e mitigação\n"
+            f"• Timeline de adoção no mercado\n"
+            f"• Posicionamento vs concorrentes\n"
+            f"• Competências organizacionais necessárias\n\n"
+            f"Escreva um GUIA ESTRATÉGICO que executivos usarão para decisões de investimento em tecnologia!"
         )
     
     try:
@@ -1214,23 +1278,187 @@ def extract_seo_keywords(title: str, content: str) -> List[str]:
     return keywords
 
 def generate_tags(title: str, content: str) -> List[str]:
-    """Gera tags relevantes para o post baseado no título e conteúdo."""
-    print("🏷️ Gerando tags para o post...")
+    """Gera tags relevantes e específicas para o post baseado no título e conteúdo."""
+    print("🏷️ Gerando tags específicas para o post...")
     
-    prompt = (
-        f"Baseado no título '{title}' e no conteúdo do artigo, gere 3-6 tags relevantes em português. "
-        "Use tags comuns de tecnologia como: inteligencia-artificial, startups, ciberseguranca, "
-        "inovacao, big-tech, software, hardware, mobile, web, dados, etc. "
-        "Retorne apenas as tags separadas por vírgula, em minúsculas e com hífens no lugar de espaços."
-    )
+    # Análise inteligente do título e conteúdo para tags específicas
+    title_lower = title.lower()
+    content_lower = content.lower()
     
-    try:
-        tags_text = call_gemini_api(prompt).strip()
-        tags = [tag.strip().lower().replace(' ', '-') for tag in tags_text.split(',')]
-        return [tag for tag in tags if tag and len(tag) > 2][:MAX_TAGS]
-    except Exception as e:
-        print(f"⚠️ Erro ao gerar tags: {e}")
-        return ["tecnologia", "inovacao"]
+    # Mapeamento de palavras-chave para tags específicas
+    keyword_to_tags = {
+        # IA e Machine Learning
+        "inteligência artificial": ["inteligencia-artificial", "machine-learning", "automacao"],
+        "chatgpt": ["inteligencia-artificial", "openai", "chatbots"],
+        "gemini": ["inteligencia-artificial", "google", "llm"],
+        "claude": ["inteligencia-artificial", "anthropic", "assistentes-ia"],
+        "machine learning": ["machine-learning", "algoritmos", "dados"],
+        "deep learning": ["deep-learning", "redes-neurais", "ia-avancada"],
+        "llm": ["modelos-linguagem", "inteligencia-artificial", "nlp"],
+        
+        # Empresas e Big Tech
+        "google": ["google", "big-tech", "android"],
+        "apple": ["apple", "big-tech", "ios"],
+        "microsoft": ["microsoft", "big-tech", "azure"],
+        "meta": ["meta", "big-tech", "realidade-virtual"],
+        "amazon": ["amazon", "big-tech", "aws"],
+        "openai": ["openai", "inteligencia-artificial", "startups"],
+        "nvidia": ["nvidia", "hardware", "gpu"],
+        "tesla": ["tesla", "veiculos-eletricos", "autonomos"],
+        
+        # Tecnologias Específicas
+        "blockchain": ["blockchain", "criptomoedas", "web3"],
+        "kubernetes": ["kubernetes", "devops", "containers"],
+        "docker": ["docker", "containers", "devops"],
+        "react": ["react", "javascript", "frontend"],
+        "python": ["python", "programacao", "desenvolvimento"],
+        "javascript": ["javascript", "web", "programacao"],
+        "cloud": ["cloud-computing", "nuvem", "infraestrutura"],
+        "aws": ["aws", "cloud-computing", "amazon"],
+        "azure": ["azure", "cloud-computing", "microsoft"],
+        
+        # Segurança
+        "cibersegurança": ["ciberseguranca", "seguranca-digital", "privacidade"],
+        "segurança": ["seguranca", "protecao-dados", "privacidade"],
+        "vulnerabilidade": ["vulnerabilidades", "seguranca", "exploits"],
+        "ransomware": ["ransomware", "malware", "ciberseguranca"],
+        
+        # Áreas Emergentes
+        "quantum": ["computacao-quantica", "qubits", "tecnologia-emergente"],
+        "biotecnologia": ["biotecnologia", "bioinformatica", "saude-digital"],
+        "neuralink": ["neuralink", "interface-cerebral", "neurociencia"],
+        "spacex": ["spacex", "tecnologia-espacial", "foguetes"],
+        "starship": ["spacex", "exploracao-espacial", "marte"],
+        
+        # Mobile e Dispositivos
+        "iphone": ["iphone", "apple", "mobile"],
+        "android": ["android", "google", "mobile"],
+        "samsung": ["samsung", "smartphones", "mobile"],
+        "pixel": ["google-pixel", "android", "smartphones"],
+        
+        # Desenvolvimento e DevOps
+        "devops": ["devops", "ci-cd", "automacao"],
+        "api": ["apis", "desenvolvimento", "integracao"],
+        "microservices": ["microservicos", "arquitetura", "cloud"],
+        "serverless": ["serverless", "cloud", "funcoes"],
+        
+        # Análise e Dados
+        "big data": ["big-data", "analytics", "dados"],
+        "analytics": ["analytics", "dados", "business-intelligence"],
+        "data science": ["data-science", "ciencia-dados", "machine-learning"],
+        
+        # Startups e Negócios
+        "startup": ["startups", "empreendedorismo", "inovacao"],
+        "unicórnio": ["unicornios", "startups", "investimentos"],
+        "venture capital": ["venture-capital", "investimentos", "startups"],
+        "ipo": ["ipo", "mercado-financeiro", "startups"],
+        
+        # Tendências Tecnológicas
+        "metaverso": ["metaverso", "realidade-virtual", "web3"],
+        "nft": ["nfts", "blockchain", "arte-digital"],
+        "web3": ["web3", "blockchain", "descentralizacao"],
+        "iot": ["internet-das-coisas", "iot", "dispositivos-conectados"],
+        "5g": ["5g", "conectividade", "telecomunicacoes"],
+        "edge computing": ["edge-computing", "computacao-borda", "latencia"],
+        
+        # Análise Técnica
+        "performance": ["performance", "otimizacao", "benchmarks"],
+        "scalability": ["escalabilidade", "arquitetura", "performance"],
+        "architecture": ["arquitetura-software", "design-sistemas", "engenharia"],
+        "security": ["seguranca", "protecao", "vulnerabilidades"],
+        "infrastructure": ["infraestrutura", "sistemas", "operacoes"],
+        "monitoring": ["monitoramento", "observabilidade", "devops"],
+        "deployment": ["deployment", "implantacao", "devops"],
+        "automation": ["automacao", "ci-cd", "devops"],
+        
+        # Veículos e Transporte
+        "autônomo": ["veiculos-autonomos", "ia-automotiva", "transporte"],
+        "elétrico": ["veiculos-eletricos", "sustentabilidade", "energia"],
+        "fsd": ["full-self-driving", "tesla", "autonomia"],
+        
+        # Materiais e Ciência
+        "supercondutores": ["supercondutores", "novos-materiais", "fisica"],
+        "grafeno": ["grafeno", "nanotecnologia", "materiais"],
+        "nanotecnologia": ["nanotecnologia", "materiais-avancados", "ciencia"]
+    }
+    
+    # Detecta tags baseadas no conteúdo
+    detected_tags = set()
+    
+    # Analisa título e conteúdo
+    text_to_analyze = f"{title_lower} {content_lower}"
+    
+    for keyword, tags in keyword_to_tags.items():
+        if keyword in text_to_analyze:
+            detected_tags.update(tags[:2])  # Máximo 2 tags por palavra-chave
+    
+    # Se não detectou tags específicas, usa análise por IA mais direcionada
+    if len(detected_tags) < 2:
+        prompt = (
+            f"ANÁLISE DE TAGS ESPECÍFICAS\n\n"
+            f"Título: {title}\n"
+            f"Conteúdo: {content[:500]}...\n\n"
+            f"Baseado no conteúdo acima, identifique as 4-6 tags MAIS ESPECÍFICAS possíveis.\n\n"
+            f"TAGS DISPONÍVEIS POR CATEGORIA:\n"
+            f"• IA: inteligencia-artificial, machine-learning, chatgpt, openai, anthropic, llm, automacao\n"
+            f"• Big Tech: google, apple, microsoft, meta, amazon, nvidia, tesla, spacex\n"
+            f"• Desenvolvimento: python, javascript, react, nodejs, api, devops, kubernetes, docker\n"
+            f"• Segurança: ciberseguranca, vulnerabilidades, ransomware, protecao-dados, privacidade\n"
+            f"• Mobile: iphone, android, samsung, smartphones, aplicativos\n"
+            f"• Cloud: aws, azure, google-cloud, serverless, microservicos, containers\n"
+            f"• Emergentes: blockchain, web3, metaverso, computacao-quantica, biotecnologia\n"
+            f"• Negócios: startups, unicornios, investimentos, venture-capital, inovacao\n"
+            f"• Análise: performance, escalabilidade, arquitetura, benchmarks, otimizacao\n\n"
+            f"INSTRUÇÕES:\n"
+            f"1. Escolha tags que REALMENTE descrevem o conteúdo específico\n"
+            f"2. Evite tags genéricas como 'tecnologia' ou 'inovacao'\n"
+            f"3. Priorize tags técnicas e específicas\n"
+            f"4. Use hífens no lugar de espaços\n"
+            f"5. Retorne apenas as tags separadas por vírgula\n\n"
+            f"Exemplo: inteligencia-artificial, openai, chatgpt, automacao\n\n"
+            f"Tags específicas:"
+        )
+        
+        try:
+            tags_text = call_gemini_api(prompt).strip()
+            ai_tags = [tag.strip().lower().replace(' ', '-') for tag in tags_text.split(',')]
+            detected_tags.update([tag for tag in ai_tags if tag and len(tag) > 2])
+        except Exception as e:
+            print(f"⚠️ Erro na análise IA de tags: {e}")
+    
+    # Converte para lista e limita
+    final_tags = list(detected_tags)[:MAX_TAGS]
+    
+    # Fallback inteligente se ainda não tem tags suficientes
+    if len(final_tags) < 2:
+        fallback_tags = []
+        
+        # Análise por palavras-chave do título
+        if "análise" in title_lower:
+            fallback_tags.append("analise-tecnica")
+        if "deep dive" in title_lower:
+            fallback_tags.append("analise-profunda")
+        if "security" in title_lower or "segurança" in title_lower:
+            fallback_tags.append("ciberseguranca")
+        if "performance" in title_lower:
+            fallback_tags.append("performance")
+        if "devops" in title_lower:
+            fallback_tags.append("devops")
+        if "cloud" in title_lower or "nuvem" in title_lower:
+            fallback_tags.append("cloud-computing")
+        
+        # Adiciona tags de fallback
+        final_tags.extend(fallback_tags)
+        
+        # Se ainda não tem tags, usa as mais relevantes do contexto
+        if len(final_tags) < 2:
+            final_tags.extend(["tecnologia-empresarial", "inovacao-digital"])
+    
+    # Remove duplicatas e limita
+    final_tags = list(dict.fromkeys(final_tags))[:MAX_TAGS]
+    
+    print(f"✅ Tags geradas: {', '.join(final_tags)}")
+    return final_tags
 
 def create_hugo_post(title: str, content: str) -> Optional[Path]:
     """Cria e salva o arquivo .md para o Hugo com otimizações SEO completas."""
@@ -1730,8 +1958,72 @@ def validate_seo_quality(title: str, content: str) -> bool:
     print(f"✅ Post aprovado na validação SEO ({word_count} palavras, {headers} subtítulos)")
     return True
 
+def validate_executive_quality(title: str, content: str) -> bool:
+    """Valida se o conteúdo atende aos padrões de qualidade para executivos C-level."""
+    print("👔 Validando qualidade executiva...")
+    
+    content_lower = content.lower()
+    
+    # Verifica densidade informacional
+    word_count = len(content.split())
+    if word_count < SEO_ARTICLE_MIN_WORDS:
+        print(f"❌ Conteúdo muito curto: {word_count} palavras (mínimo: {SEO_ARTICLE_MIN_WORDS})")
+        return False
+    
+    # Verifica presença de dados concretos
+    has_numbers = bool(re.search(r'\d+%|\d+\.\d+%|\$\d+|\d+ milhões?|\d+ bilhões?', content))
+    has_metrics = any(word in content_lower for word in [
+        'roi', 'receita', 'custo', 'investimento', 'economia', 'eficiência',
+        'produtividade', 'market share', 'crescimento', 'redução'
+    ])
+    
+    if not (has_numbers or has_metrics):
+        print("❌ Falta dados concretos e métricas executivas")
+        return False
+    
+    # Verifica análise estratégica
+    strategic_elements = [
+        'impacto', 'estratégia', 'competitiv', 'vantagem', 'oportunidade',
+        'risco', 'implementação', 'adoção', 'timeline', 'roadmap'
+    ]
+    
+    strategic_count = sum(1 for element in strategic_elements if element in content_lower)
+    if strategic_count < 3:
+        print(f"❌ Falta elementos estratégicos: {strategic_count}/3 mínimo")
+        return False
+    
+    # Verifica estrutura executiva
+    has_sections = content.count('##') >= 4  # Mínimo 4 seções
+    
+    if not has_sections:
+        print("❌ Estrutura inadequada: menos de 4 seções")
+        return False
+    
+    # Verifica linguagem executiva (evita jargões excessivos)
+    jargon_count = sum(1 for word in [
+        'disruptivo', 'revolucionário', 'game-changer', 'breakthrough',
+        'cutting-edge', 'state-of-the-art', 'next-generation'
+    ] if word in content_lower)
+    
+    if jargon_count > 2:
+        print(f"❌ Excesso de jargões promocionais: {jargon_count}")
+        return False
+    
+    # Verifica presença de análise comparativa
+    has_comparison = any(word in content_lower for word in [
+        'comparado', 'versus', 'alternativa', 'concorrente', 'diferença',
+        'vantagem sobre', 'desvantagem', 'melhor que', 'superior'
+    ])
+    
+    if not has_comparison:
+        print("❌ Falta análise comparativa")
+        return False
+    
+    print("✅ Conteúdo aprovado para padrões executivos")
+    return True
+
 def validate_post_quality(title: str, content: str) -> bool:
-    """Valida a qualidade básica, ética e SEO do post gerado."""
+    """Valida a qualidade básica, ética, SEO e executiva do post gerado."""
     
     # Validação de qualidade jornalística
     if not validate_journalistic_quality(title, content):
@@ -1748,7 +2040,12 @@ def validate_post_quality(title: str, content: str) -> bool:
         print("❌ Post não atende aos critérios SEO, regenerando...")
         return False
     
-    print("✅ Post aprovado em todas as validações (ética + SEO)")
+    # Validação executiva (nova)
+    if not validate_executive_quality(title, content):
+        print("❌ Post não atende aos padrões executivos, regenerando...")
+        return False
+    
+    print("✅ Post aprovado em todas as validações (jornalística + ética + SEO + executiva)")
     return True
 
 def load_ethical_guidelines() -> bool:
