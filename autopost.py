@@ -921,77 +921,78 @@ def write_article(title: str) -> str:
         news_description = news_context.get("description", "")
         
         prompt = (
-            f"ANÁLISE EXECUTIVA PARA C-LEVEL - {current_date}\n\n"
-            f"CONTEXTO: Você é um consultor sênior de McKinsey/BCG escrevendo para CEOs, CTOs e executivos C-level sobre: '{news_title}'\n"
-            f"ARTIGO: '{title}'\n\n"
-            f"NOTÍCIA DE REFERÊNCIA:\n"
-            f"- Título: {news_title}\n"
+            f"ANÁLISE JORNALÍSTICA PROFISSIONAL - {current_date}\n\n"
+            f"CONTEXTO: Você é um jornalista especializado em tecnologia escrevendo para um veículo respeitado como TechCrunch ou The Verge.\n"
+            f"NOTÍCIA BASE: '{news_title}' (Fonte: {news_source})\n"
+            f"SEU ARTIGO: '{title}'\n\n"
+            f"INFORMAÇÕES DA NOTÍCIA:\n"
+            f"- Título original: {news_title}\n"
             f"- Fonte: {news_source}\n"
             f"- Contexto: {news_description}\n\n"
-            f"FONTES EXECUTIVAS: {references_text}\n\n"
-            f"PÚBLICO-ALVO: Executivos C-level que precisam de informações PRECISAS e ACIONÁVEIS para tomada de decisão estratégica.\n\n"
-            f"ESTRUTURA EXECUTIVA OBRIGATÓRIA:\n\n"
-            f"## 📊 Executive Summary\n"
-            f"- Impacto nos negócios em 2-3 frases diretas\n"
-            f"- Números e métricas específicas quando disponíveis\n"
-            f"- Recomendação estratégica imediata\n\n"
-            f"## 🎯 Strategic Context\n"
-            f"- Posicionamento competitivo no mercado\n"
-            f"- Implicações para diferentes setores\n"
-            f"- Janela de oportunidade temporal\n\n"
-            f"## 💼 Business Impact Analysis\n"
-            f"- Impacto direto em receita/custos/operações\n"
-            f"- Riscos e oportunidades quantificados\n"
-            f"- Comparação com concorrentes diretos\n\n"
-            f"## 🔧 Technical Implementation\n"
-            f"- Requisitos técnicos e de infraestrutura\n"
-            f"- Timeline realista de implementação\n"
-            f"- Investimento necessário (CAPEX/OPEX)\n\n"
-            f"## 📈 Market Dynamics\n"
-            f"- Tendências de adoção no mercado\n"
-            f"- Posição dos principais players\n"
-            f"- Previsões baseadas em dados históricos\n\n"
-            f"## ⚡ Action Items\n"
-            f"- Próximos passos imediatos (30/60/90 dias)\n"
-            f"- Recursos necessários e responsabilidades\n"
-            f"- KPIs para monitoramento\n\n"
-            f"PADRÕES DE QUALIDADE EXECUTIVA:\n"
-            f"🎯 PRECISÃO ABSOLUTA: Toda informação deve ser verificável e precisa\n"
-            f"🎯 DENSIDADE INFORMACIONAL: {SEO_ARTICLE_MIN_WORDS}-{SEO_ARTICLE_MAX_WORDS} palavras, zero fluff\n"
-            f"🎯 LINGUAGEM EXECUTIVA: Direta, objetiva, sem jargões desnecessários\n"
-            f"🎯 DADOS CONCRETOS: Números, percentuais, datas, versões específicas\n"
-            f"🎯 ANÁLISE CRÍTICA: Prós, contras, riscos e oportunidades equilibrados\n"
-            f"🎯 CONTEXTO COMPETITIVO: Comparações com alternativas e concorrentes\n"
-            f"🎯 ACIONABILIDADE: Cada seção deve gerar insights para decisão\n\n"
-            f"ELEMENTOS OBRIGATÓRIOS PARA C-LEVEL:\n"
-            f"✅ Executive Summary com impacto quantificado\n"
-            f"✅ Análise de ROI e TCO quando aplicável\n"
-            f"✅ Timeline de implementação realista\n"
-            f"✅ Comparação com soluções concorrentes\n"
-            f"✅ Riscos técnicos e de negócio identificados\n"
-            f"✅ Recomendações estratégicas específicas\n"
-            f"✅ Métricas de sucesso mensuráveis\n\n"
-            f"QUALIDADE EDITORIAL EXECUTIVA:\n"
-            f"📝 Cada parágrafo = um insight acionável\n"
-            f"📝 Transições lógicas que constroem o argumento\n"
-            f"📝 Linguagem precisa, sem redundâncias\n"
-            f"📝 Estrutura de pirâmide: conclusões primeiro, detalhes depois\n"
-            f"📝 Verbos no presente para fatos, futuro para projeções\n\n"
-            f"PROIBIÇÕES ABSOLUTAS:\n"
-            f"❌ Informações imprecisas ou especulativas\n"
-            f"❌ Linguagem promocional ou sensacionalista\n"
-            f"❌ Generalizações sem dados de suporte\n"
-            f"❌ Jargões técnicos sem explicação\n"
-            f"❌ Conclusões sem evidências\n"
-            f"❌ Redundâncias ou informações irrelevantes\n\n"
-            f"INSTRUÇÕES CRÍTICAS:\n"
-            f"• PRIMEIRO PARÁGRAFO: Impacto nos negócios em números concretos\n"
-            f"• DADOS ESPECÍFICOS: Versões, datas, percentuais, valores monetários\n"
-            f"• ANÁLISE COMPETITIVA: Compare com pelo menos 2 alternativas\n"
-            f"• TIMELINE: Marcos específicos de implementação\n"
-            f"• ROI: Quando aplicável, inclua análise de retorno\n"
-            f"• RISCOS: Identifique e quantifique riscos principais\n\n"
-            f"Escreva uma ANÁLISE EXECUTIVA que um CEO usaria para tomar decisões estratégicas!"
+            f"FONTES ADICIONAIS: {references_text}\n\n"
+            f"OBJETIVO: Escrever um artigo jornalístico profissional que pareça ter sido escrito por um jornalista experiente, não por IA.\n\n"
+            f"ESTRUTURA JORNALÍSTICA NATURAL:\n\n"
+            f"**Parágrafo de abertura (Lead):**\n"
+            f"- Responda O QUE, QUEM, QUANDO, ONDE nos primeiros 2-3 parágrafos\n"
+            f"- Use linguagem direta e factual\n"
+            f"- Inclua dados específicos quando disponíveis\n\n"
+            f"**Desenvolvimento:**\n"
+            f"- Contexto histórico e background\n"
+            f"- Detalhes técnicos explicados de forma acessível\n"
+            f"- Citações de especialistas ou fontes oficiais\n"
+            f"- Comparações com concorrentes\n"
+            f"- Implicações para o mercado\n\n"
+            f"**Análise e perspectivas:**\n"
+            f"- Impacto na indústria\n"
+            f"- Reações do mercado\n"
+            f"- Próximos desenvolvimentos esperados\n\n"
+            f"PADRÕES DE QUALIDADE JORNALÍSTICA:\n"
+            f"📰 NATURALIDADE: Texto deve soar como jornalismo profissional, não IA\n"
+            f"📰 DENSIDADE: {SEO_ARTICLE_MIN_WORDS}-{SEO_ARTICLE_MAX_WORDS} palavras com informação relevante\n"
+            f"📰 LINGUAGEM: Clara, precisa, sem jargões excessivos\n"
+            f"📰 DADOS REAIS: Use informações verificáveis, não invente números\n"
+            f"📰 FLUXO NATURAL: Parágrafos conectados logicamente\n"
+            f"📰 CONTEXTO: Explique por que isso importa\n"
+            f"📰 EQUILÍBRIO: Apresente diferentes perspectivas\n\n"
+            f"ELEMENTOS OBRIGATÓRIOS:\n"
+            f"✅ Lead jornalístico claro nos primeiros parágrafos\n"
+            f"✅ Contexto histórico relevante\n"
+            f"✅ Explicação técnica acessível\n"
+            f"✅ Comparação com concorrentes\n"
+            f"✅ Implicações para usuários/empresas\n"
+            f"✅ Perspectivas de especialistas (quando apropriado)\n"
+            f"✅ Conclusão que amarra os pontos principais\n\n"
+            f"TÉCNICAS PARA PARECER NATURAL:\n"
+            f"🎯 Use transições naturais entre parágrafos\n"
+            f"🎯 Varie o tamanho das frases\n"
+            f"🎯 Inclua detalhes específicos que um jornalista incluiria\n"
+            f"🎯 Use linguagem que um humano usaria\n"
+            f"🎯 Evite listas excessivas ou formatação artificial\n"
+            f"🎯 Conecte informações de forma lógica\n\n"
+            f"PROIBIÇÕES CRÍTICAS:\n"
+            f"❌ NÃO invente datas específicas ou eventos recentes\n"
+            f"❌ NÃO crie números específicos (percentuais, versões, quantidades)\n"
+            f"❌ NÃO afirme fatos específicos sem base na notícia original\n"
+            f"❌ NÃO use linguagem robótica ou repetitiva\n"
+            f"❌ NÃO use estruturas artificiais demais\n"
+            f"❌ NÃO seja genérico ou superficial\n"
+            f"❌ NÃO use clichês de IA ('revolucionário', 'game-changer')\n"
+            f"❌ NÃO deixe frases incompletas ou seções vazias\n"
+            f"❌ NÃO invente citações ou declarações de executivos\n\n"
+            f"INSTRUÇÕES ESPECÍFICAS:\n"
+            f"• PRIMEIRO PARÁGRAFO: Fato principal da notícia de forma clara\n"
+            f"• SEGUNDO PARÁGRAFO: Por que isso importa\n"
+            f"• DESENVOLVIMENTO: Detalhes técnicos e contexto\n"
+            f"• ANÁLISE: Implicações e perspectivas\n"
+            f"• CONCLUSÃO: Síntese dos pontos principais\n\n"
+            f"INTEGRIDADE FACTUAL OBRIGATÓRIA:\n"
+            f"🔍 Use APENAS informações da notícia original fornecida\n"
+            f"🔍 NÃO invente datas, números ou eventos específicos\n"
+            f"🔍 Se não souber um detalhe específico, seja genérico\n"
+            f"🔍 Prefira 'recentemente' a datas específicas inventadas\n"
+            f"🔍 Use 'aproximadamente' para números incertos\n"
+            f"🔍 Base-se no contexto geral, não em fatos específicos\n\n"
+            f"Escreva um ARTIGO JORNALÍSTICO FACTUALMENTE CORRETO que um editor experiente aprovaria!"
         )
     elif news_context:
         # Prompt para conteúdo baseado em notícia real (menos técnico)
@@ -1905,49 +1906,122 @@ def commit_new_post(file_path: Path, title: str):
         print("❌ ERRO: O comando 'git' não foi encontrado. O arquivo foi criado mas não commitado.")
 
 def validate_journalistic_quality(title: str, content: str) -> bool:
-    """Valida se o conteúdo atende aos padrões de qualidade jornalística."""
+    """Valida se o conteúdo atende aos padrões de qualidade jornalística profissional."""
     
     issues = []
-    
-    # Verifica se tem lead jornalístico (primeiros 2 parágrafos)
-    paragraphs = [p.strip() for p in content.split('\n\n') if p.strip() and not p.startswith('#')]
-    if len(paragraphs) >= 2:
-        first_two = ' '.join(paragraphs[:2]).lower()
-        # Verifica se responde aos 5 W's básicos (mais flexível)
-        has_what = any(word in first_two for word in ['anunciou', 'lançou', 'revelou', 'apresentou', 'desenvolveu', 'criou', 'introduziu', 'implementou', 'oferece', 'disponibiliza'])
-        has_who = any(word in first_two for word in ['empresa', 'companhia', 'organização', 'equipe', 'google', 'microsoft', 'amazon', 'meta', 'nvidia', 'apple', 'tecnologia', 'plataforma'])
-        
-        # Relaxa critério - só precisa de O QUE e QUEM
-        if not (has_what or has_who):
-            issues.append("Lead precisa ser mais informativo sobre o que aconteceu e quem está envolvido")
-    
-    # Verifica densidade de dados específicos
-    data_indicators = len(re.findall(r'\d+[%\w]*', content))  # números, percentuais
     word_count = len(content.split())
+    
+    # 1. Verifica se o artigo está completo
+    if content.endswith('**Observa') or '**Observa' in content:
+        issues.append("Artigo incompleto ou cortado")
+    
+    if content.count('...') > 3:
+        issues.append("Muitas reticências indicam conteúdo incompleto")
+    
+    # 2. Verifica tamanho mínimo adequado
+    if word_count < 400:
+        issues.append(f"Artigo muito curto: {word_count} palavras (mínimo recomendado: 400)")
+    
+    # 3. Verifica seções vazias ou muito curtas
+    sections = content.split('##')
+    empty_sections = 0
+    for section in sections[1:]:  # Pula a primeira parte
+        section_content = section.split('\n', 1)[1] if '\n' in section else ""
+        section_text = re.sub(r'\*\*.*?\*\*', '', section_content).strip()
+        if len(section_text) < 50:  # Menos de 50 caracteres de conteúdo real
+            empty_sections += 1
+    
+    if empty_sections > 1:
+        issues.append(f"Seções vazias ou muito curtas: {empty_sections}")
+    
+    # 4. Verifica lead jornalístico
+    paragraphs = [p.strip() for p in content.split('\n\n') if p.strip() and not p.startswith('#')]
+    if paragraphs:
+        first_paragraph = re.sub(r'\*\*.*?\*\*', '', paragraphs[0]).strip()
+        
+        if len(first_paragraph.split()) < 25:
+            issues.append("Lead jornalístico muito curto (menos de 25 palavras)")
+        
+        # Verifica se responde aos 5 W's básicos
+        first_para_lower = first_paragraph.lower()
+        has_what = any(word in first_para_lower for word in [
+            'anunciou', 'lançou', 'revelou', 'apresentou', 'desenvolveu', 
+            'criou', 'introduziu', 'implementou', 'oferece', 'disponibiliza'
+        ])
+        has_who = any(word in first_para_lower for word in [
+            'nvidia', 'apple', 'google', 'microsoft', 'amazon', 'meta', 
+            'anthropic', 'openai', 'tesla', 'spacex'
+        ])
+        
+        if not (has_what and has_who):
+            issues.append("Lead não responde adequadamente O QUE e QUEM")
+    
+    # 5. Verifica densidade de informações específicas
+    data_indicators = len(re.findall(r'\d+[%\w]*|\$\d+|\d+\.\d+', content))
     data_density = data_indicators / word_count if word_count > 0 else 0
     
-    if data_density < 0.01:  # Menos de 1% de dados específicos
-        issues.append("Baixa densidade de dados específicos (números, percentuais)")
+    if data_density < 0.015:  # Menos de 1.5% de dados específicos
+        issues.append("Baixa densidade de dados específicos (números, percentuais, valores)")
     
-    # Verifica se tem parágrafos muito longos (mais flexível)
-    long_paragraphs = [p for p in paragraphs if len(p.split()) > 150]
-    if len(long_paragraphs) > 3:
-        issues.append("Parágrafos excessivamente longos (>150 palavras)")
+    # 6. Detecta linguagem típica de IA
+    ai_phrases = [
+        'é importante notar', 'vale ressaltar', 'é crucial entender',
+        'em resumo', 'em conclusão', 'para concluir', 'revolucionário',
+        'game-changer', 'disruptivo', 'cutting-edge', 'state-of-the-art',
+        'next-generation', 'breakthrough', 'paradigm shift'
+    ]
     
-    # Verifica redundâncias comuns
+    content_lower = content.lower()
+    ai_phrase_count = sum(1 for phrase in ai_phrases if phrase in content_lower)
+    if ai_phrase_count > 2:
+        issues.append(f"Linguagem artificial demais ({ai_phrase_count} frases típicas de IA)")
+    
+    # 7. Verifica formatação excessiva (típica de IA)
+    formatting_count = content.count('**') + content.count('✅') + content.count('❌')
+    if formatting_count > 15:
+        issues.append("Formatação excessiva que parece gerada por IA")
+    
+    # 8. Verifica conectores lógicos para fluxo natural
+    logical_connectors = [
+        'portanto', 'consequentemente', 'assim', 'dessa forma', 'logo', 
+        'além disso', 'por outro lado', 'entretanto', 'contudo', 'no entanto', 
+        'adicionalmente', 'por sua vez', 'desta forma', 'enquanto isso',
+        'ao mesmo tempo', 'em contrapartida'
+    ]
+    connector_count = sum(1 for connector in logical_connectors if connector in content_lower)
+    if connector_count < 3:
+        issues.append("Poucos conectores lógicos para fluxo natural")
+    
+    # 9. Verifica repetições excessivas
+    sentences = re.split(r'[.!?]', content)
+    sentence_starts = [s.strip()[:20] for s in sentences if len(s.strip()) > 20]
+    
+    repeated_starts = sum(1 for start in sentence_starts if sentence_starts.count(start) > 1)
+    if repeated_starts > 3:
+        issues.append("Muitas frases com início repetitivo")
+    
+    # 10. Verifica parágrafos muito curtos (típico de IA)
+    short_paragraphs = sum(1 for p in paragraphs if len(p.split()) < 15)
+    if short_paragraphs > len(paragraphs) * 0.4:  # Mais de 40% são curtos
+        issues.append("Muitos parágrafos muito curtos (típico de IA)")
+    
+    # 11. Verifica contexto jornalístico
+    context_indicators = [
+        'segundo', 'de acordo com', 'conforme', 'relatou', 'informou',
+        'declarou', 'afirmou', 'explicou', 'comentou', 'disse', 'fonte'
+    ]
+    context_count = sum(1 for indicator in context_indicators if indicator in content_lower)
+    if context_count < 1:
+        issues.append("Falta contexto jornalístico (citações, fontes)")
+    
+    # 12. Verifica redundâncias
     redundant_phrases = [
         'é importante notar que', 'vale destacar que', 'cabe ressaltar que',
-        'como mencionado anteriormente', 'conforme já dito'
+        'como mencionado anteriormente', 'conforme já dito', 'vale lembrar que'
     ]
-    redundancy_count = sum(content.lower().count(phrase) for phrase in redundant_phrases)
-    if redundancy_count > 3:
+    redundancy_count = sum(content_lower.count(phrase) for phrase in redundant_phrases)
+    if redundancy_count > 2:
         issues.append("Muitas frases redundantes ou clichês")
-    
-    # Verifica se tem conectores lógicos (mais abrangente)
-    logical_connectors = ['portanto', 'consequentemente', 'assim', 'dessa forma', 'logo', 'além disso', 'por outro lado', 'entretanto', 'contudo', 'no entanto', 'adicionalmente', 'por sua vez', 'desta forma']
-    connector_count = sum(1 for connector in logical_connectors if connector in content.lower())
-    if connector_count < 2:
-        issues.append("Poucos conectores lógicos para melhor fluxo textual")
     
     if issues:
         print(f"❌ Problemas de qualidade jornalística encontrados:")
@@ -1958,6 +2032,95 @@ def validate_journalistic_quality(title: str, content: str) -> bool:
     print("✅ Conteúdo aprovado na validação de qualidade jornalística")
     return True
 
+
+def validate_factual_integrity(title: str, content: str) -> bool:
+    """Valida a integridade factual do conteúdo para evitar informações incorretas."""
+    print("🔍 Validando integridade factual...")
+    
+    issues = []
+    title_lower = title.lower()
+    content_lower = content.lower()
+    
+    # Detecta afirmações factuais específicas que podem estar incorretas
+    factual_claims = []
+    
+    # Detecta datas específicas recentes que podem estar incorretas
+    current_year = datetime.now().year
+    recent_dates = re.findall(r'(\d{1,2} de \w+ de \d{4})', content)
+    for date_match in recent_dates:
+        if str(current_year) in date_match:
+            factual_claims.append(f"Data específica: {date_match}")
+    
+    # Detecta números específicos que podem estar incorretos
+    specific_numbers = re.findall(r'(\d{3,4} qubits?|\d+% de melhoria|\d+ bilhões?)', content)
+    for number in specific_numbers:
+        factual_claims.append(f"Número específico: {number}")
+    
+    # Detecta afirmações de lançamentos/anúncios recentes
+    recent_announcements = [
+        'anunciou hoje', 'lançou ontem', 'revelou nesta semana',
+        'apresentou hoje', 'divulgou nesta manhã', 'confirmou hoje'
+    ]
+    
+    for announcement in recent_announcements:
+        if announcement in content_lower:
+            factual_claims.append(f"Anúncio recente: {announcement}")
+    
+    # Detecta versões específicas que podem estar incorretas
+    version_claims = re.findall(r'(versão \d+\.\d+|v\d+\.\d+|\w+ \d+)', content)
+    for version in version_claims:
+        if any(word in version.lower() for word in ['iphone', 'android', 'windows', 'ios']):
+            factual_claims.append(f"Versão específica: {version}")
+    
+    # Se há muitas afirmações factuais específicas, é arriscado
+    if len(factual_claims) > 3:
+        issues.append(f"Muitas afirmações factuais específicas ({len(factual_claims)}) - risco de imprecisão")
+    
+    # Detecta inconsistências temporais
+    if str(current_year) in content and any(word in content_lower for word in [
+        'anunciou', 'lançou', 'revelou', 'apresentou'
+    ]):
+        # Verifica se não está inventando eventos do ano atual
+        if not any(source in content_lower for source in [
+            'segundo', 'de acordo com', 'conforme', 'fonte'
+        ]):
+            issues.append("Possível invenção de eventos recentes sem fontes")
+    
+    # Detecta afirmações muito específicas sobre empresas
+    company_claims = []
+    companies = ['ibm', 'google', 'microsoft', 'apple', 'nvidia', 'meta', 'amazon']
+    
+    for company in companies:
+        if company in content_lower:
+            # Procura por afirmações específicas sobre a empresa
+            company_context = content_lower[max(0, content_lower.find(company)-100):content_lower.find(company)+200]
+            
+            specific_claims = [
+                'atingiu', 'alcançou', 'superou', 'quebrou recorde',
+                'primeiro a', 'líder em', 'domina o mercado'
+            ]
+            
+            for claim in specific_claims:
+                if claim in company_context:
+                    company_claims.append(f"{company.upper()}: {claim}")
+    
+    if len(company_claims) > 2:
+        issues.append(f"Muitas afirmações específicas sobre empresas - verificar veracidade")
+    
+    # Detecta números suspeitos (muito redondos ou específicos demais)
+    suspicious_numbers = re.findall(r'(\d+% de aumento|\d+% mais rápido|\d+% de melhoria)', content)
+    if len(suspicious_numbers) > 2:
+        issues.append("Muitos percentuais específicos - podem ser imprecisos")
+    
+    if issues:
+        print("❌ Problemas de integridade factual encontrados:")
+        for issue in issues:
+            print(f"   • {issue}")
+        print("⚠️ RECOMENDAÇÃO: Verificar todas as informações específicas antes da publicação")
+        return False
+    
+    print("✅ Integridade factual aprovada")
+    return True
 
 def validate_ethical_guidelines(title: str, content: str) -> bool:
     """Valida se o conteúdo segue as diretrizes éticas."""
@@ -2208,13 +2371,18 @@ def validate_executive_quality(title: str, content: str) -> bool:
     return True
 
 def validate_post_quality(title: str, content: str) -> bool:
-    """Valida a qualidade básica, ética, SEO, executiva e consistência do post gerado."""
+    """Valida a qualidade básica, ética, SEO, executiva, consistência e integridade factual do post gerado."""
     
     # Gera tags e keywords para validação de consistência
     tags = generate_tags(title, content)
     keywords = extract_seo_keywords(title, content)
     
-    # Validação de consistência (CRÍTICA - deve ser primeira)
+    # Validação de integridade factual (CRÍTICA - primeira validação)
+    if not validate_factual_integrity(title, content):
+        print("❌ Post tem problemas de integridade factual, regenerando...")
+        return False
+    
+    # Validação de consistência (CRÍTICA - segunda validação)
     if not validate_content_consistency(title, content, tags, keywords):
         print("❌ Post tem inconsistências críticas, regenerando...")
         return False
@@ -2239,7 +2407,7 @@ def validate_post_quality(title: str, content: str) -> bool:
         print("❌ Post não atende aos padrões executivos, regenerando...")
         return False
     
-    print("✅ Post aprovado em todas as validações (consistência + jornalística + ética + SEO + executiva)")
+    print("✅ Post aprovado em todas as validações (integridade + consistência + jornalística + ética + SEO + executiva)")
     return True
 
 def load_ethical_guidelines() -> bool:
