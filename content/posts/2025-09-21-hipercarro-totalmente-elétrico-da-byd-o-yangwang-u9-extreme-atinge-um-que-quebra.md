@@ -1,6 +1,6 @@
 ---
 title: "Hipercarro totalmente elétrico da BYD, o YangWang U9 Extreme, atinge um que quebra recordes 308mph"
-date: 2025-09-21T15:47:16.035202-03:00
+date: 2025-09-21T15:54:15.658490-03:00
 draft: false
 description: "A novo hypercar has dethronedBugatti's recordfor o fastest production car, e unsurprisingly, it's an electric vehicle. During um livestream at o Automotive T..."
 summary: "A novo hypercar has dethronedBugatti's recordfor o fastest production car, e unsurprisingly, it's an electric vehicle. During um livestream at o Automotive T..."
