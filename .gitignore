@@ -2,7 +2,7 @@
 .env
 .env.*
 *.bat
-*.py
+#*.py
 
 # Dependências
 node_modules/
