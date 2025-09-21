@@ -1,9 +1,9 @@
 ---
 title: "Hipercarro totalmente elétrico da BYD, o YangWang U9 Extreme, atinge um que quebra recordes 308mph"
-date: 2025-09-21T15:54:47.825118-03:00
+date: 2025-09-21T15:55:11.745697-03:00
 draft: false
-description: "A novo hypercar has dethronedBugatti's recordfor o fastest production car, e unsurprisingly, it's an electric vehicle. During um livestream at o Automotive T..."
-summary: "A novo hypercar has dethronedBugatti's recordfor o fastest production car, e unsurprisingly, it's an electric vehicle. During um livestream at o Automotive T..."
+description: "Nova tecnologia em veículos elétricos com impacto significativo no mercado automotivo global."
+summary: "Nova tecnologia em veículos elétricos com impacto significativo no mercado automotivo global."
 tags:
   - veiculos-eletricos
   - carros
@@ -17,7 +17,7 @@ wordCount: 167
 source_url: "https://www.engadget.com/transportation/evs/byds-all-electric-hypercar-the-yangwang-u9-extreme-hits-a-record-breaking-308mph-180727354.html?src=rss"
 seo:
   title: "Hipercarro totalmente elétrico da BYD, o YangWang U9 Extreme, atinge um que quebra recordes 308mph"
-  description: "A novo hypercar has dethronedBugatti's recordfor o fastest production car, e unsurprisingly, it's an electric vehicle. During um livestream at o Automotive T..."
+  description: "Nova tecnologia em veículos elétricos com impacto significativo no mercado automotivo global."
   canonical: ""
   noindex: false
 ---
