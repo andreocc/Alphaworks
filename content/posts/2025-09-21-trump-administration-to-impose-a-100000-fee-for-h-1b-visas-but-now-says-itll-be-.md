@@ -1,6 +1,6 @@
 ---
 title: "Trump administration to impose a $100,000 fee for H-1B visas, but now says it'll be a one-time charge"
-date: 2025-09-21T11:49:03.384242-03:00
+date: 2025-09-21T15:50:05.992612-03:00
 draft: false
 description: "PresidentDonald Trumphassigneda new executive order, which adds a $100,000 fee to H-1B visa applications. But according to White House Press Secretary Karoli..."
 summary: "PresidentDonald Trumphassigneda new executive order, which adds a $100,000 fee to H-1B visa applications. But according to White House Press Secretary Karoli..."
