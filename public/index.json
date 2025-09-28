@@ -1,71 +1,0 @@
-{
-  "baseURL": "http://localhost:1313/",
-  "languageCode": "pt-br",
-  "title": "Alphaworks",
-  "posts": [
-    
-    
-    {
-      "title": "PIX com IA: Fraudes disparam e bancos se preparam para a guerra contra deepfakes",
-      "permalink": "http://localhost:1313/posts/2025-09-11-pix-com-ia-fraudes-disparam-e-bancos-se-preparam-p/",
-      "summary": "PIX com IA: Fraudes disparam e bancos se preparam para a guerra contra deepfakesO PIX, sistema de pagamentos instantâneos brasileiro, revolucionou a forma como realizamos transações financeiras. Sua velocidade e praticidade, no entanto, atraíram também a atenção de criminosos, que utilizam cada vez mais inteligência artificial (IA) para burlar os sistemas de segurança e cometer fraudes. Com o avanço da tecnologia de deepfakes, a situação se torna ainda mais preocupante, forçando bancos e instituições financeiras a intensificarem a sua luta contra essas novas ameaças.
-"
-    }
-    
-    ,
-    {
-      "title": "NFTs Brasileiros: O Boom do Mercado de Arte Digital em 2025",
-      "permalink": "http://localhost:1313/posts/2025-09-11-nfts-brasileiros-o-boom-do-mercado-de-arte-digital/",
-      "summary": "NFTs Brasileiros: O Boom do Mercado de Arte Digital em 2025?O mercado de NFTs (tokens não fungíveis) explodiu globalmente nos últimos anos, e o Brasil, apesar de um início hesitante, mostra sinais de se tornar um player importante nesse cenário até 2025. A pergunta que paira no ar, porém, é: será um boom estrondoso, ou um crescimento mais gradual e consistente? Este artigo analisa as tendências, os desafios e as oportunidades para o mercado de NFTs brasileiros projetando-se para o ano de 2025.
-"
-    }
-    
-    ,
-    {
-      "title": "Metaverso Brasileiro: Oportunidades e Desafios da Imersão em 2025",
-      "permalink": "http://localhost:1313/posts/2025-09-11-metaverso-brasileiro-oportunidades-e-desafios-da-i/",
-      "summary": "Metaverso Brasileiro: Oportunidades e Desafios da Imersão em 2025O metaverso ainda é um conceito em formação, mas sua influência crescente já se faz sentir globalmente. No Brasil, apesar dos desafios infraestruturais e de inclusão digital, o potencial do metaverso é gigantesco, prometendo revolucionar setores como entretenimento, educação, saúde e comércio. Mas o que esperar do Metaverso Brasileiro em 2025? Quais oportunidades e desafios nos aguardam? Este artigo analisa as perspectivas e os obstáculos para a consolidação dessa tecnologia no país.
-"
-    }
-    
-    ,
-    {
-      "title": "IA Generativa e o Futuro do Trabalho no Brasil: Oportunidades e Desafios em 2025",
-      "permalink": "http://localhost:1313/posts/2025-09-11-ia-generativa-e-o-futuro-do-trabalho-no-brasil-opo/",
-      "summary": "IA Generativa e o Futuro do Trabalho no Brasil: Oportunidades e Desafios em 2025A inteligência artificial generativa (IAG) está revolucionando diversos setores globalmente, e o Brasil não é exceção. Em 2025, sua influência no mercado de trabalho brasileiro será inegável, prometendo tanto oportunidades promissoras quanto desafios significativos. Este artigo analisa as perspectivas, considerando o contexto específico do país.
-O Impacto da IAG em Setores-ChaveA IAG, com sua capacidade de criar conteúdo original – texto, imagens, áudio e vídeo – impactará setores distintos. No setor financeiro, por exemplo, a automatização de tarefas como análise de risco e atendimento ao cliente será intensificada. Bancos e fintechs poderão otimizar processos e reduzir custos, mas isso também significará uma reavaliação das habilidades necessárias para os profissionais da área.
-"
-    }
-    
-    ,
-    {
-      "title": "5G no Brasil: Avanços, desafios e o futuro da conectividade",
-      "permalink": "http://localhost:1313/posts/2025-09-11-5g-no-brasil-avan%C3%A7os-desafios-e-o-futuro-da-conect/",
-      "summary": "5G no Brasil: Avanços, desafios e o futuro da conectividadeA chegada do 5G no Brasil representou um marco na história da telecomunicações do país, prometendo velocidades de internet sem precedentes e abrindo caminho para inovações em diversos setores. No entanto, o processo de implantação e expansão da tecnologia não tem sido isento de desafios. Este artigo analisa os avanços conquistados, os obstáculos enfrentados e as perspectivas futuras para a conectividade 5G no território nacional.
-"
-    }
-    
-    ,
-    {
-      "title": "PIX e Open Banking: como as novas tecnologias impactam o dia a dia do brasileiro",
-      "permalink": "http://localhost:1313/posts/2025-09-11-pix-e-open-banking-como-as-novas-tecnologias-impac/",
-      "summary": "PIX e Open Banking: a revolução silenciosa no dia a dia do brasileiroO Brasil, nos últimos anos, tem testemunhado uma transformação significativa no setor financeiro, impulsionada por duas tecnologias inovadoras: o PIX e o Open Banking. Mais do que simples atualizações, essas ferramentas estão redefinindo a maneira como os brasileiros interagem com o dinheiro, impactando profundamente o dia a dia de milhões de pessoas. Este artigo analisa como essas tecnologias estão moldando a realidade financeira nacional, seus benefícios e desafios.
-"
-    }
-    
-    ,
-    {
-      "title": "Archives",
-      "permalink": "http://localhost:1313/archives/",
-      "summary": ""
-    }
-    
-    ,
-    {
-      "title": "Search",
-      "permalink": "http://localhost:1313/search/",
-      "summary": ""
-    }
-    
-  ]
-}
